@@ -1,5 +1,5 @@
-import patterns.testFactoryMethod
+import leetcode_problems.totalCountChars
 
 fun main(args: Array<String>) {
-    testFactoryMethod()
+    totalCountChars("fffrrrsee")
 }

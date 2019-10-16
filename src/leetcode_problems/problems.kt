@@ -15,8 +15,62 @@ fun reverse(num: Int): Int {
         buffer.append(chArr[ch])
     }
     val resString = buffer.toString()
-    if(resString.length>=9 && buffer.first().toInt()>0){
+    if (resString.length >= 9 && buffer.first().toInt() > 0) {
         //todo
     }
     return resString.toInt() * sign
+}
+
+
+fun stringCompress(input: String): String {
+    var currentChar: Char? = null
+    var currentSize = 0
+    val result = StringBuilder()
+    val array = input.toCharArray()
+    for (c in array) {
+        if (currentChar == null) {
+            currentChar = c
+            currentSize = 1
+            result.append(c).append(currentSize.toString())
+        } else {
+            if (c == currentChar) {
+                currentSize++
+                result.deleteCharAt(result.length - 1)
+                result.append(currentSize.toString())
+            } else {
+                currentChar = c
+                currentSize = 1
+                result.append(c).append(currentSize.toString())
+            }
+        }
+    }
+    return if (result.length < input.length) {
+        result.toString()
+    } else {
+        input
+    }
+}
+
+fun totalCountChars(input: String): String {
+    val chArray = arrayListOf<Char>()
+    for (c in input.toCharArray()) {
+        chArray.add(c)
+    }
+    var currentChar: Char? = null
+    val iterator = chArray.iterator()
+    var currentCount = 0
+    while (iterator.hasNext()){
+        val next = iterator.next()
+        if (currentChar == null) {
+            currentChar = next
+            iterator.remove()
+            currentCount++
+        }else{
+            if (currentChar == next) {
+                iterator.remove()
+                currentCount++
+            }
+        }
+    }
+    return input
 }
