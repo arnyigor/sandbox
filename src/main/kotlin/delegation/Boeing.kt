@@ -1,4 +1,4 @@
-package kotlin_features.delegation
+package delegation
 
 class Boeing : Airplane {
     override var canFly = false

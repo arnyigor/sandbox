@@ -1,4 +1,4 @@
-package kotlin_features.delegation
+package delegation
 
 interface Airplane {
     var canFly: Boolean

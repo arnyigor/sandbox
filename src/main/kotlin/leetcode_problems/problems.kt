@@ -1,7 +1,5 @@
 package leetcode_problems
 
-import java.util.*
-
 fun reverse(num: Int): Int {
     if (num >= Int.MAX_VALUE) return 0
     var input = num

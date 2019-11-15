@@ -11,7 +11,7 @@ public class CoffeeApp {
         CoffeeMaker maker();
     }
 
-    public static void main(String[] args) {
+    public static void init( ) {
         CoffeeShop coffeeShop = DaggerCoffeeApp_CoffeeShop.builder().build();
         coffeeShop.maker().brew();
     }

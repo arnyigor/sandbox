@@ -1,13 +1,10 @@
 package utils;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import sun.security.util.BitArray;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 class BytesUtils {
@@ -36,7 +33,6 @@ class BytesUtils {
     public static int bytesToInt(byte[] bytes, ByteOrder byteOrder) {
         return bytesToInt(bytes, 0, bytes.length * Byte.SIZE, byteOrder);
     }
-
 
 
     @NotNull
@@ -127,12 +123,6 @@ class BytesUtils {
 
     /**
      * Конвертирует диапазон битов из массива байтов в {@code long}.
-     *
-     * @param bytes       Массив байтов
-     * @param firstBitPos Индекс первого бита
-     * @param length      Количество битов
-     * @param byteOrder   Порядок сортировки байтов
-     * @return 8-и байтное представление.
      */
     public static long bytesToLong(byte[] bytes, int firstBitPos, int length, ByteOrder byteOrder) {
         long result = 0;
