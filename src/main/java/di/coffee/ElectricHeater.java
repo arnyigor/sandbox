@@ -1,18 +1,21 @@
-package di;
+package di.coffee;
 
 class ElectricHeater implements Heater {
     private boolean heating;
 
-    @Override public void on() {
+    @Override
+    public void on() {
         System.out.println("~ ~ ~ heating ~ ~ ~");
         this.heating = true;
     }
 
-    @Override public void off() {
+    @Override
+    public void off() {
         this.heating = false;
     }
 
-    @Override public boolean isHot() {
+    @Override
+    public boolean isHot() {
         return heating;
     }
 }

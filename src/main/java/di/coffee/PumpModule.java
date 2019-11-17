@@ -1,4 +1,4 @@
-package di;
+package di.coffee;
 
 import dagger.Binds;
 import dagger.Module;

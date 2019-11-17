@@ -1,4 +1,4 @@
-package di;
+package di.coffee;
 
 interface Heater {
     void on();

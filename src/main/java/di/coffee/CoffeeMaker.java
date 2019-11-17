@@ -1,9 +1,9 @@
-package di;
+package di.coffee;
 
 import dagger.Lazy;
 import javax.inject.Inject;
 
-class CoffeeMaker {
+public class CoffeeMaker {
     private final Lazy<Heater> heater; // Create a possibly costly heater only when we use it.
     private final Pump pump;
 

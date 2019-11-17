@@ -1,7 +1,5 @@
-import di.CoffeeApp
-import patterns.testAbstractFactoryMethod
-import patterns.testFactoryMethod
+import di.transport.TransportApp
 
 fun main(args: Array<String>) {
-    CoffeeApp.init()
+    TransportApp.init()
 }
