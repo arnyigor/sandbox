@@ -1,14 +1,29 @@
 package utils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-public class JavaRunner {
+import interfaces.Testable;
+import rx.CompletableTests;
+
+public class JavaRunnerTestable implements Testable {
     private static final SimpleDateFormat dd_MM_yyyy_HH_mm = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private static final Calendar calendar = GregorianCalendar.getInstance();
+
+    public static void runKotlin() {
+        CompletableTests rxCompletableTests = new CompletableTests();
+        rxCompletableTests.runTest(null);
+    }
+
+    @Override
+    public void runTest(@Nullable String[] args) {
+        System.out.println(getFullFileUrl());
+    }
 
     public static void decode() {
         byte[] income = new byte[]{
@@ -87,8 +102,14 @@ public class JavaRunner {
         System.out.println("");
     }
 
+    private static String getFullFileUrl() {
+        String fileRelativeUrl = "rules_vacation_credit_online.html";
+        String url = "https://10.214.24.148/TSC.iBanking.MSB.Web.IISHost/api/";
+        return url.substring(0, url.indexOf("api/")) + fileRelativeUrl;
+    }
 
-    public static void checkImito(){
+
+    public static void checkImito() {
         final ImotoChecker imotoChecker = new ImotoChecker();
         imotoChecker.check();
     }

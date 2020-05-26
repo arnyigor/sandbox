@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import java.lang.reflect.Type
 import kotlin.coroutines.CoroutineContext
 
+
 /**
  * return items from second array wich not includes in first by custom diff in predicate
  * @param newList ArrayList of  T
@@ -238,30 +239,6 @@ fun <T> CoroutineScope.launch(block: suspend (CoroutineScope) -> T, onError: (Th
     }
 }
 
-fun getMainScope(): CoroutineScope {
-    return CoroutineScope(Dispatchers.Default + SupervisorJob())
-}
-
-suspend fun <T> async(block: suspend () -> T): T {
-    return withContext(Dispatchers.IO) { block.invoke() }
-}
-
-suspend fun <T> async(block: suspend () -> T, onError: (Throwable) -> Unit  = {}): T? {
-    return try {
-        withContext(Dispatchers.IO) {
-            block.invoke()
-        }
-    } catch (e: Exception) {
-        onError(e)
-        null
-    }
-}
-
-fun <T> launch(block: suspend () -> T): CoroutineScope {
-    val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    scope.launch { block.invoke() }
-    return scope
-}
 
 fun getThread(): String? {
     return Thread.currentThread().name

@@ -1,8 +1,9 @@
 package di.coffee;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module(includes = PumpModule.class)
 public class DripCoffeeModule {

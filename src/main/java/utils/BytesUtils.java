@@ -1,11 +1,12 @@
 package utils;
 
 import org.jetbrains.annotations.NotNull;
-import sun.security.util.BitArray;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+
+import sun.security.util.BitArray;
 
 class BytesUtils {
 

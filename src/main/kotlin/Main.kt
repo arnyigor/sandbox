@@ -1,7 +1,11 @@
-import utils.FileStringUtils
+import ui.MainForm
 
 fun main(args: Array<String>) {
-    val inFilePath = "../sandbox/input.txt"
-    val outFilePath = "moxy.zip"
-    FileStringUtils.stringToFile(inFilePath,outFilePath)
+    runMainform()
+}
+
+ fun runMainform() {
+    val dialog = MainForm()
+    dialog.pack()
+    dialog.isVisible = true
 }
