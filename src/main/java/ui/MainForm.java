@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
@@ -19,7 +20,8 @@ public class MainForm extends JDialog {
     private final MainFormPresenter mainFormPresenter;
     private JPanel contentPane;
     private JButton buttonOK;
-    private JButton buttonChoose;
+    private JButton btnFileToStr;
+    private JButton bntStrtoFile;
     private JButton buttonCancel;
     private JButton buttonAuth;
 
@@ -28,7 +30,8 @@ public class MainForm extends JDialog {
         initUI();
 
         buttonOK.addActionListener(e -> onOK());
-        buttonChoose.addActionListener(e -> onFileChoose());
+        btnFileToStr.addActionListener(e -> onFileToString());
+        bntStrtoFile.addActionListener(e -> onStrToFile());
         buttonAuth.addActionListener(e -> onAuth());
         buttonCancel.addActionListener(e -> onCancel());
 
@@ -48,11 +51,13 @@ public class MainForm extends JDialog {
         contentPane = new JPanel();
         buttonOK = new JButton("OK");
         buttonCancel = new JButton("Cancel");
-        buttonChoose = new JButton("Choose file");
+        btnFileToStr = new JButton("File to Str");
+        bntStrtoFile = new JButton("Str to file");
         buttonAuth = new JButton("Auth");
         contentPane.add(buttonOK);
         contentPane.add(buttonCancel);
-        contentPane.add(buttonChoose);
+        contentPane.add(btnFileToStr);
+        contentPane.add(bntStrtoFile);
         contentPane.add(buttonAuth);
         setContentPane(contentPane);
         setLocation(
@@ -68,12 +73,22 @@ public class MainForm extends JDialog {
         mainFormPresenter.onOkClicked();
     }
 
-    private void onFileChoose() {
+    private void onFileToString() {
         JFileChooser chooser = new JFileChooser();
         int returnVal = chooser.showOpenDialog(contentPane);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-            mainFormPresenter.convertToStringFile(absolutePath);
+            mainFormPresenter.convertFileToString(absolutePath);
+        }
+    }
+
+    private void onStrToFile() {
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(contentPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String result = JOptionPane.showInputDialog(this,
+                    "Введите имя файла с расширением", "file.zip");
+            mainFormPresenter.convertStringToFile(chooser.getSelectedFile().getAbsolutePath(), result);
         }
     }
 

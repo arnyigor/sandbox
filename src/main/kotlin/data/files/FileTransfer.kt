@@ -14,11 +14,11 @@ class FileTransfer: IFileTransfer {
         println("fileToString...$outFilePath...OK")
     }
 
-    override fun stringToFile(){
-        val properties = System.getProperties()
-        val home = properties.getProperty("user.home")
-        val inFilePath = "$home/Desktop/flightlogbook.txt"
-        val outFilePath = "$home/Desktop/flightlogbook_new.zip"
+    override fun stringToFile(absolutePath: String, newFileName: String) {
+        val path = absolutePath.substringBeforeLast(File.separator)
+        val filename = absolutePath.substringAfterLast(File.separator)
+        val inFilePath = "$path/$filename"
+        val outFilePath = "$path/$newFileName"
         FileStringUtils.stringToFile(inFilePath, outFilePath)
         println("stringToFile...OK")
     }

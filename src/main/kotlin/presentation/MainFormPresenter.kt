@@ -15,7 +15,7 @@ class MainFormPresenter {
     }
 
 
-    fun convertToStringFile(absolutePath: String) {
+    fun convertFileToString(absolutePath: String) {
         fileTransfer.fileToString(absolutePath)
     }
 
@@ -27,5 +27,9 @@ class MainFormPresenter {
             }, {
                 it.printStackTrace()
             })
+    }
+
+    fun convertStringToFile(absolutePath: String, result: String) {
+        fileTransfer.stringToFile(absolutePath, result)
     }
 }
