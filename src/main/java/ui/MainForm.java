@@ -9,8 +9,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
@@ -20,16 +22,20 @@ public class MainForm extends JDialog {
     private final MainFormPresenter mainFormPresenter;
     private JPanel contentPane;
     private JButton buttonOK;
+    private JButton buttonCalc;
     private JButton btnFileToStr;
     private JButton bntStrtoFile;
     private JButton buttonCancel;
     private JButton buttonAuth;
+    private JTextField edtField;
+    private JLabel labelResult;
 
     public MainForm() {
         mainFormPresenter = new MainFormPresenter();
         initUI();
 
         buttonOK.addActionListener(e -> onOK());
+        buttonCalc.addActionListener(e -> onCalc());
         btnFileToStr.addActionListener(e -> onFileToString());
         bntStrtoFile.addActionListener(e -> onStrToFile());
         buttonAuth.addActionListener(e -> onAuth());
@@ -54,11 +60,17 @@ public class MainForm extends JDialog {
         btnFileToStr = new JButton("File to Str");
         bntStrtoFile = new JButton("Str to file");
         buttonAuth = new JButton("Auth");
+        buttonCalc = new JButton("Calc");
+        edtField = new JTextField("10;37.7;54.4;3.0");
+        labelResult = new JLabel();
         contentPane.add(buttonOK);
         contentPane.add(buttonCancel);
         contentPane.add(btnFileToStr);
         contentPane.add(bntStrtoFile);
         contentPane.add(buttonAuth);
+        contentPane.add(buttonCalc);
+        contentPane.add(edtField);
+        contentPane.add(labelResult);
         setContentPane(contentPane);
         setLocation(
                 (Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - getWidth() / 2,
@@ -71,6 +83,10 @@ public class MainForm extends JDialog {
 
     private void onOK() {
         mainFormPresenter.onOkClicked();
+    }
+
+    private void onCalc() {
+        labelResult.setText(mainFormPresenter.calcSun(edtField.getText()));
     }
 
     private void onFileToString() {
