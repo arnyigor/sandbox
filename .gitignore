@@ -89,3 +89,6 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
+*.ts
+src/main/java/algoritms/
+src/main/kotlin/di/
