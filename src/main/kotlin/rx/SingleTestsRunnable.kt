@@ -14,12 +14,29 @@ import java.io.File
 class SingleTestsRunnable : Testable {
     private val activeClientObservable = BehaviorSubject.create<Any>()
     override fun runTest(args: Array<String>?) {
-        filterTest()
+        meybeTest()
+    }
+
+    private fun returnNullable(): String? {
+        val random = (0..1).random()
+        if (random == 1) {
+            return "random:$random, Not nullable"
+        }
+        return null
+    }
+
+    private fun meybeTest() {
+        Maybe.fromCallable { val returnNullable = returnNullable()
+            println("returnNullable:$returnNullable")
+            returnNullable
+        }
                 .subscribe({
-                    println("File:$it")
+                    println("subscribe result:$it")
                 }, {
-                    println("error:" + it.message)
+                    println("error result:" + it.message)
                     it.printStackTrace()
+                }, {
+                    println("complete result:")
                 })
     }
 

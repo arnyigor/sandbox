@@ -1,42 +1,36 @@
 package ui;
 
-import java.awt.Toolkit;
+import presentation.MainFormPresenter;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
-import presentation.MainFormPresenter;
-
-public class MainForm extends JDialog {
+public class MainFrame extends JDialog {
     private final MainFormPresenter mainFormPresenter;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCalc;
+    private JButton buttonCalcGeoTime;
     private JButton btnFileToStr;
     private JButton bntStrtoFile;
     private JButton buttonCancel;
     private JButton buttonAuth;
+    private JButton btnReadXls;
     private JTextField edtField;
     private JLabel labelResult;
 
-    public MainForm() {
+    public MainFrame() {
         mainFormPresenter = new MainFormPresenter();
         initUI();
 
         buttonOK.addActionListener(e -> onOK());
         buttonCalc.addActionListener(e -> onCalc());
+        buttonCalcGeoTime.addActionListener(e -> onCalcGeoTime());
         btnFileToStr.addActionListener(e -> onFileToString());
+        btnReadXls.addActionListener(e -> onReadXls());
         bntStrtoFile.addActionListener(e -> onStrToFile());
         buttonAuth.addActionListener(e -> onAuth());
         buttonCancel.addActionListener(e -> onCancel());
@@ -60,7 +54,9 @@ public class MainForm extends JDialog {
         btnFileToStr = new JButton("File to Str");
         bntStrtoFile = new JButton("Str to file");
         buttonAuth = new JButton("Auth");
+        btnReadXls = new JButton("ReadXls");
         buttonCalc = new JButton("Calc");
+        buttonCalcGeoTime = new JButton("Calc Time");
         edtField = new JTextField("10;37.7;54.4;3.0");
         labelResult = new JLabel();
         contentPane.add(buttonOK);
@@ -68,7 +64,9 @@ public class MainForm extends JDialog {
         contentPane.add(btnFileToStr);
         contentPane.add(bntStrtoFile);
         contentPane.add(buttonAuth);
+        contentPane.add(btnReadXls);
         contentPane.add(buttonCalc);
+        contentPane.add(buttonCalcGeoTime);
         contentPane.add(edtField);
         contentPane.add(labelResult);
         setContentPane(contentPane);
@@ -89,12 +87,29 @@ public class MainForm extends JDialog {
         labelResult.setText(mainFormPresenter.calcSun(edtField.getText()));
     }
 
+    private void onCalcGeoTime() {
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(contentPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String absolutePath = chooser.getSelectedFile().getAbsolutePath();
+            mainFormPresenter.timeGeoCalc(absolutePath);
+        }
+    }
+
     private void onFileToString() {
         JFileChooser chooser = new JFileChooser();
         int returnVal = chooser.showOpenDialog(contentPane);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
             mainFormPresenter.convertFileToString(absolutePath);
+        }
+    }
+
+    private void onReadXls() {
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(contentPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            mainFormPresenter.readXls(chooser.getSelectedFile().getAbsolutePath());
         }
     }
 

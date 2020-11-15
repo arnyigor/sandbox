@@ -3,6 +3,7 @@ package utils
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import java.lang.reflect.Type
+import java.math.RoundingMode
 import kotlin.coroutines.CoroutineContext
 
 
@@ -12,7 +13,12 @@ import kotlin.coroutines.CoroutineContext
  * @param second Collection of  T
  * @param predicate function equals
  */
-fun <T> arraysDiff(newList: ArrayList<T>?, oldList: ArrayList<T>, fillAll: Boolean = false, predicate: (firstItem: T, secondItem: T) -> Boolean): ArrayList<T> {
+fun <T> arraysDiff(
+    newList: ArrayList<T>?,
+    oldList: ArrayList<T>,
+    fillAll: Boolean = false,
+    predicate: (firstItem: T, secondItem: T) -> Boolean
+): ArrayList<T> {
     if (newList.isNullOrEmpty()) return oldList
     if (newList.isEmpty() && oldList.isNotEmpty()) return oldList
     val result = arrayListOf<T>()
@@ -48,7 +54,11 @@ fun <T> List<T>.isEquals(newList: List<T>?, predicate: ((old: T, new: T) -> Bool
  * @param oldList List of  T
  * @param predicate function equals
  */
-fun <T> arraysStrongEquals(newList: List<T>?, oldList: List<T>, predicate: ((old: T, new: T) -> Boolean?)? = null): Boolean {
+fun <T> arraysStrongEquals(
+    newList: List<T>?,
+    oldList: List<T>,
+    predicate: ((old: T, new: T) -> Boolean?)? = null
+): Boolean {
     if (newList.isNullOrEmpty()) return false
     if (newList.isEmpty() && oldList.isNotEmpty()) return false
     val tmpNew = ArrayList<T>(newList.size)
@@ -86,7 +96,7 @@ fun <T> Collection<T>.filterList(predicate: (T) -> Boolean): ArrayList<T> {
     return ArrayList(this.filter(predicate))
 }
 
- inline fun <reified T : Any> Collection<T>?.dump(predicate: (cls: T) -> String?): String {
+inline fun <reified T : Any> Collection<T>?.dump(predicate: (cls: T) -> String?): String {
     return dumpArray(this, predicate)
 }
 
@@ -208,7 +218,15 @@ fun Any?.empty(): Boolean {
     }
 }
 
-fun <T> launchAsync(block: suspend () -> T, onComplete: (T) -> Unit = {}, onError: (Throwable) -> Unit = {}, onCanceled: (CancellationException) -> Unit = {},dispatcher: CoroutineDispatcher = Dispatchers.IO,name:String = "", context: CoroutineContext = Dispatchers.Default + SupervisorJob() + CoroutineName(name)): Job {
+fun <T> launchAsync(
+    block: suspend () -> T,
+    onComplete: (T) -> Unit = {},
+    onError: (Throwable) -> Unit = {},
+    onCanceled: (CancellationException) -> Unit = {},
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    name: String = "",
+    context: CoroutineContext = Dispatchers.Default + SupervisorJob() + CoroutineName(name)
+): Job {
     return CoroutineScope(context).launch {
         try {
             val result = withContext(dispatcher) { block.invoke() }
@@ -227,7 +245,11 @@ fun Job.addTo(compositeJob: CompositeJob) {
     compositeJob.add(this)
 }
 
-fun <T> CoroutineScope.launch(block: suspend (CoroutineScope) -> T, onError: (Throwable) -> Unit = {}, onCanceled: () -> Unit  = {}): Job {
+fun <T> CoroutineScope.launch(
+    block: suspend (CoroutineScope) -> T,
+    onError: (Throwable) -> Unit = {},
+    onCanceled: () -> Unit = {}
+): Job {
     return this.launch {
         try {
             block.invoke(this)
@@ -246,4 +268,9 @@ fun getThread(): String? {
 
 fun getHexColor(color: Int): String {
     return String.format("#%06X", (0xFFFFFF and color))
+}
+
+fun getPercent(current: Int, total: Int): Double {
+    return ((current.toDouble() / total.toDouble()) * 100.0).toBigDecimal().setScale(2, RoundingMode.HALF_UP)
+        .toDouble()
 }

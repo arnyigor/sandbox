@@ -9,7 +9,7 @@ import utils.JavaRunnerTestable
 
 class MainInteractor : IMainInteractor {
     override fun runTest() {
-        val testable: Testable? = when ("kotlin") {
+        val testable: Testable? = when ("rx") {
             "rx" -> SingleTestsRunnable()
             "rxComplete" -> CompletableTests()
             "coroutins" -> CoroutinsTests()

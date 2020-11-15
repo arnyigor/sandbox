@@ -10,8 +10,6 @@ class FileStringUtils {
     companion object {
         fun stringToFile(inFilePath: String, outFilePath: String) {
             val inFile = File(inFilePath)
-            val files = inFile.listFiles()
-            println("files:${Arrays.toString(files)}")
             val stringByteArray = FileUtils.readFileToString(inFile, StandardCharsets.UTF_8)
             val byteValues = stringByteArray.substring(1, stringByteArray.length - 1).split(",")
             val bytes = ByteArray(byteValues.size)
@@ -22,17 +20,11 @@ class FileStringUtils {
                 i++
             }
             val file = File(outFilePath)
-           /* val exists = file.exists() && file.isFile
-            if (!exists) {
-                file.createNewFile()
-            }*/
             FileUtils.writeByteArrayToFile(file, bytes)
         }
 
         fun fileToString(inFilePath: String, outFilePath: String) {
             try {
-//                val filePath1 = "../KotlinTests/moxy.zip"
-//                val fileSave = "../KotlinTests/save.txt"
                 val inFile = File(inFilePath)
                 val byteArray = FileUtils.readFileToByteArray(inFile)
                 val stringByteArray = Arrays.toString(byteArray)

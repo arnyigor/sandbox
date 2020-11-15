@@ -1,11 +1,11 @@
-JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.8" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :p:77:p, comp button1:::p::p, space ::95:x}}"
-			"$verticalGroup": "par l {seq l {space :p:73:p, comp button1:::p::p, space ::100:x}}"
+			"$horizontalGroup": "par l {seq l {space :p:77:p, comp button1:::p::p, space ::105:x}}"
+			"$verticalGroup": "par l {seq l {space :p:73:p, comp button1:::p::p, space ::155:x}}"
 		} ) {
 			name: "this"
 			"resizable": false
@@ -17,7 +17,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 285, 235 )
+			"size": new java.awt.Dimension( 295, 290 )
 		} )
 	}
 }

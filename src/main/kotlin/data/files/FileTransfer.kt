@@ -1,9 +1,10 @@
 package data.files
 
 import utils.FileStringUtils
+import utils.FilesUtils
 import java.io.File
 
-class FileTransfer: IFileTransfer {
+class FileTransfer : IFileTransfer {
     override fun fileToString(absolutePath: String) {
         val path = absolutePath.substringBeforeLast(File.separator)
         val filename = absolutePath.substringAfterLast(File.separator)
@@ -11,7 +12,8 @@ class FileTransfer: IFileTransfer {
         val inFilePath = "$path/$filename"
         val outFilePath = "$path/$name.txt"
         FileStringUtils.fileToString(inFilePath, outFilePath)
-        println("fileToString...$outFilePath...OK")
+        val file = File(outFilePath)
+        println("fileToString...OK...$file...${FilesUtils.formatFileSize(file.length(), 3)}")
     }
 
     override fun stringToFile(absolutePath: String, newFileName: String) {
@@ -20,6 +22,7 @@ class FileTransfer: IFileTransfer {
         val inFilePath = "$path/$filename"
         val outFilePath = "$path/$newFileName"
         FileStringUtils.stringToFile(inFilePath, outFilePath)
-        println("stringToFile...OK")
+        val file = File(outFilePath)
+        println("stringToFile...OK...$file...${FilesUtils.formatFileSize(file.length(), 3)}")
     }
 }

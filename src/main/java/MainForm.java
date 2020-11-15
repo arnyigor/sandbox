@@ -1,4 +1,5 @@
-import presentation.MainPresenter;
+import presentation.MainFormPresenter;
+import presentation.MainFormView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,19 +9,26 @@ import java.awt.event.ActionEvent;
  */
 
 
-
 /**
  * @author unknown
  */
-public class MainForm extends JFrame {
-    private final MainPresenter mainPresenter = new MainPresenter();
+public class MainForm extends JFrame  implements MainFormView {
+    private final MainFormPresenter mainPresenter = new MainFormPresenter(this);
+
     public MainForm() {
         initComponents();
         setVisible(true);
     }
 
     private void button1ActionPerformed(ActionEvent e) {
-        mainPresenter.downloadFiles();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(getContentPane());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String absolutePath = chooser.getSelectedFile().getAbsolutePath();
+            mainPresenter.downloadFiles(absolutePath);
+        }
+
     }
 
     private void initComponents() {
@@ -38,18 +46,18 @@ public class MainForm extends JFrame {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addGap(77, 77, 77)
-                    .addComponent(button1)
-                    .addContainerGap(95, Short.MAX_VALUE))
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addGap(77, 77, 77)
+                                .addComponent(button1)
+                                .addContainerGap(105, Short.MAX_VALUE))
         );
         contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addGap(73, 73, 73)
-                    .addComponent(button1)
-                    .addContainerGap(100, Short.MAX_VALUE))
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addGap(73, 73, 73)
+                                .addComponent(button1)
+                                .addContainerGap(155, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(null);
