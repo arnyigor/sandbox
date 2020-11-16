@@ -4,20 +4,65 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :p:77:p, comp button1:::p::p, space ::105:x}}"
-			"$verticalGroup": "par l {seq l {space :p:73:p, comp button1:::p::p, space ::155:x}}"
+			"$horizontalGroup": "par l {seq {par l {seq {space :p:18:p, par l {seq {comp button2:::p:111:p, space :p:54:p, comp button3:::p:155:p}, par t {seq {comp label3:::p:56:p, space :6:6:p, comp textField2:::p:364:p}, seq {comp label2:::p:56:p, space :::p, comp textField1:::p:364:p}, seq t {comp label4:::p:56:p, space :::p, comp textField3:::p:103:p, space s:::p, comp label5:::p:56:p, space :6:6:p, comp textField4:::p:103:p, space :p:78:p}}}, space :0:8:x}, seq {space :::p, comp progressBar1::::446:x}, comp label1::t::452:x}, space :::p}, seq l {space :p:176:p, comp button1:::p::p, space ::194:x}}"
+			"$verticalGroup": "par l {seq t {space :p:16:p, par b {comp textField1::b:p::p, comp label2::b:p::p}, space s:::p, par l {seq l {space :7:7:p, comp label3:::p::p}, comp textField2:::p::p}, par l {seq {space :p:25:p, comp label4:::p::p}, seq l {space s:::p, par l {seq l {space :7:7:p, comp label5:::p::p}, comp textField4:::p::p, comp textField3:::p::p}}}, space u:::p, par b {comp button2::b:p::p, comp button3::b:p::p}, space :::p, comp label1:::p:28:p, space :p:12:p, comp progressBar1:::p:19:p, space s:::p, comp button1:::p::p, space ::31:x}}"
 		} ) {
 			name: "this"
 			"resizable": false
 			"$locationPolicy": 1
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button1"
-				"text": "DownloadFiles"
+				"text": "Download"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button2"
+				"text": "ChoosePath"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button2ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JProgressBar" ) {
+				name: "progressBar1"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "text"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "Cookie"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "Path"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField2"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "From"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField3"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "textField4"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label5"
+				"text": "to"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button3"
+				"text": "Files list"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button3ActionPerformed", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 295, 290 )
+			"size": new java.awt.Dimension( 460, 360 )
 		} )
 	}
 }

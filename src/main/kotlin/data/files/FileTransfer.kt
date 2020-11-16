@@ -1,7 +1,7 @@
 package data.files
 
 import utils.FileStringUtils
-import utils.FilesUtils
+import utils.formatFileSize
 import java.io.File
 
 class FileTransfer : IFileTransfer {
@@ -13,7 +13,7 @@ class FileTransfer : IFileTransfer {
         val outFilePath = "$path/$name.txt"
         FileStringUtils.fileToString(inFilePath, outFilePath)
         val file = File(outFilePath)
-        println("fileToString...OK...$file...${FilesUtils.formatFileSize(file.length(), 3)}")
+        println("fileToString...OK...$file...${formatFileSize(file.length(), 3)}")
     }
 
     override fun stringToFile(absolutePath: String, newFileName: String) {
@@ -23,6 +23,6 @@ class FileTransfer : IFileTransfer {
         val outFilePath = "$path/$newFileName"
         FileStringUtils.stringToFile(inFilePath, outFilePath)
         val file = File(outFilePath)
-        println("stringToFile...OK...$file...${FilesUtils.formatFileSize(file.length(), 3)}")
+        println("stringToFile...OK...$file...${formatFileSize(file.length(), 3)}")
     }
 }

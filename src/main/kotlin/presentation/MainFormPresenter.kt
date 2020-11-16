@@ -25,6 +25,11 @@ import java.text.DecimalFormat
 
 
 class MainFormPresenter {
+    private var absolutePath: String? = null
+    private var cookie: String? = null
+    private var tsUrlWithoutEndIterate: String? = null
+    private var start = 0
+    private var end = 0
     private val fileTransfer: IFileTransfer = FileTransfer()
     private val astroCalculator: AstroCalculator = AstroCalculator()
     private val timeGeoCalc: TimeGeoCalc = TimeGeoCalc()
@@ -62,19 +67,18 @@ class MainFormPresenter {
         timeGeoCalc.readFile(absolutePath)
     }
 
-
     fun convertFileToString(absolutePath: String) {
         fileTransfer.fileToString(absolutePath)
     }
 
     fun auth() {
         githubRepository.test()
-            .observeOn(Schedulers.trampoline())
-            .subscribe({
-                println("Result $it")
-            }, {
-                it.printStackTrace()
-            })
+                .observeOn(Schedulers.trampoline())
+                .subscribe({
+                    println("Result $it")
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     fun convertStringToFile(absolutePath: String, result: String) {
@@ -83,69 +87,65 @@ class MainFormPresenter {
 
     fun readXls(absolutePath: String) {
         Observable.fromCallable { fileReader.readXls(absolutePath) }
-            .map { XlsToDatabaseFileConverter(it).convert() }
-            .map {
-                val outFile = File(absolutePath.substringBeforeLast("\\"), "res.txt")
-                FileUtils.writeStringToFile(outFile, it, StandardCharsets.UTF_8)
-                outFile
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.trampoline())
-            .subscribe({
-                println("On complete $it")
-            }, {
-                it.printStackTrace()
-            })
+                .map { XlsToDatabaseFileConverter(it).convert() }
+                .map {
+                    val outFile = File(absolutePath.substringBeforeLast("\\"), "res.txt")
+                    FileUtils.writeStringToFile(outFile, it, StandardCharsets.UTF_8)
+                    outFile
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
+                .subscribe({
+                    println("On complete $it")
+                }, {
+                    it.printStackTrace()
+                })
     }
 
 
-    private suspend fun download(absolutePath: String) {
-        val headers = listOf(
-            Pair(
-                "cookie",
-                "_ga=GA1.2.1060281196.1605350617; _gid=GA1.2.160345043.1605350617; _ym_uid=1605350617976242495; _ym_d=1605350617; _ym_isad=1; _fbp=fb.1.1605350618184.1971129977; CloudFront-Key-Pair-Id=APKAJH3GITHJTCN7K4VQ; _ym_visorc_64600876=w; CloudFront-Policy=eyJTdGF0ZW1lbnQiOiBbeyJSZXNvdXJjZSI6Imh0dHBzOi8vc3RyZWFtLWxpdmUuanVncnUub3JnLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2MzY4OTA5Nzl9LCJEYXRlR3JlYXRlclRoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTYwNTI2ODU3OX19fV19; CloudFront-Signature=aX0i49h0WjZBD17ig8WS6HMx4Ocy4Eg6n-XzubukzdzboyFhl4jV4LjaglRxFhueWFPF6lBRfnqgk1qXSXHSGdDPQLsql0l5o5A6JowCSP1y4OSRJEt4p--PnV-EItO9eY~B1h-~Y4V~iTK6E2Y2TnOpmLLSluizTpmVPiSR~PSqRg6Z3BooRGs0ZENrj1qAMmIPRCvDdwIbmX5bvwz-NZg6Ne1zQP-hRMEn~GgoGl~7zDYdRbec16BFx0nOinSZNgenNGW1S75ET9LiRAIaw88MlOuwzfBd0ro-5g~xo2BIhJxsGBmcSEG2ibdlIEoYR1taooELsczn4y7wbyX4Fw__"
-            )
-        )
-        val start = 651
-        val end = 2615
-        val writefileName = "mobius20202-track4-day2_1920"
-        val tsUrlWithoutEndIterate =
-            "https://stream-live.jugru.org/mobius20202/mobius20202-track4-day2/mobius20202-track4-day2_1920/00000/mobius20202-track4-day2_1920_"
-        (start..end).asFlow()
-            .flatMapMerge { i: Int ->
-                println("Progress:${getPercent(i, end)}")
-                getSingleFile(
-                    index = i,
-                    headers = headers,
-                    parentPath = absolutePath,
-                    tsUrlWithoutEndIterate = tsUrlWithoutEndIterate,
-                    writefileName = writefileName
-                )
-            }
-            .flowOn(Dispatchers.IO)
-            .catch { t ->
-                t.printStackTrace()
-            }
-            .collect {
-                when (it) {
-                    is DownloadResult.Progress -> {
+    private suspend fun download(absolutePath: String, onProgress: (progress: Int) -> Unit) {
+        val url = tsUrlWithoutEndIterate
+        val cookieData = cookie
+        if (cookieData != null && url != null && start != 0 && end != 0 && end > start) {
+            val headers = listOf(Pair("cookie", cookieData))
+            val writefileName = url.substringAfterLast("/")
+            (start..end).asFlow()
+                    .onEach {
+                        onProgress(getPercent(it, end, start).toInt())
                     }
-                    is DownloadResult.Success -> {
-                        println("Result:${it.message}")
+                    .flowOn(Dispatchers.Default)
+                    .flatMapMerge { i: Int ->
+                        getSingleFile(
+                                index = i,
+                                headers = headers,
+                                parentPath = absolutePath,
+                                tsUrlWithoutEndIterate = url,
+                                writefileName = writefileName
+                        )
                     }
-                    is DownloadResult.Error -> {
-                        println("Error:${it.message}")
+                    .flowOn(Dispatchers.IO)
+                    .catch { t -> t.printStackTrace() }
+                    .collect {
+                        when (it) {
+                            is DownloadResult.Progress -> {
+                            }
+                            is DownloadResult.Success -> {
+//                                println("Result:${it.message}")
+                            }
+                            is DownloadResult.Error -> {
+                                println("Error message:${it.message},cause:${it.cause?.stackTrace}")
+                            }
+                        }
                     }
-                }
-            }
+        }
     }
 
     private suspend fun getSingleFile(
-        index: Int,
-        headers: List<Pair<String, String>>,
-        parentPath: String,
-        tsUrlWithoutEndIterate: String,
-        writefileName: String
+            index: Int,
+            headers: List<Pair<String, String>>,
+            parentPath: String,
+            tsUrlWithoutEndIterate: String,
+            writefileName: String
     ): Flow<DownloadResult> {
         val formattedIndex = DecimalFormat("00000").format(index)
         val fileName = "$formattedIndex.ts"
@@ -160,14 +160,44 @@ class MainFormPresenter {
         }
     }
 
-    fun downloadFiles(absolutePath: String) {
-        launchAsync({
-            download(absolutePath)
-        }, {
-            println("download files: OK")
-        }, {
-            println("download files error")
-            it.printStackTrace()
-        })
+    fun downloadFiles(onProgress: (progress: Int) -> Unit, onSuccess: () -> Unit) {
+        absolutePath?.let { path ->
+            launchAsync({
+                download(path, onProgress)
+            }, {
+                println("download files: OK")
+                onSuccess()
+            }, {
+                println("download files error")
+                it.printStackTrace()
+            })
+        }
+    }
+
+    fun filesList() {
+        absolutePath?.let { path ->
+            val listFile = File(path + File.separator + "mylist.txt")
+            val sb = StringBuilder()
+            File(path).walk().forEach {
+                val name = it.absolutePath.substringAfterLast(File.separator)
+                if (name.contains(".ts")) {
+                    val doubleSeparator = File.separator + File.separator
+                    val newPath = path.replace(File.separator, doubleSeparator) + doubleSeparator + name
+                    val content = "file $newPath\n"
+                    sb.append(content)
+                }
+            }
+            if (listFile.isFileExist()) {
+                listFile.writeText(sb.toString())
+            }
+        }
+    }
+
+    fun savePath(absolutePath: String, cookie: String, url: String, fromStr: String, toStr: String) {
+        this.cookie = cookie
+        this.tsUrlWithoutEndIterate = url
+        this.start = fromStr.toIntOrNull() ?: 0
+        this.end = toStr.toIntOrNull() ?: 0
+        this.absolutePath = absolutePath
     }
 }

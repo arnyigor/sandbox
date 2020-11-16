@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import utils.formattedFileSize
 import java.io.File
+import javax.xml.ws.http.HTTPException
 import kotlin.math.roundToInt
 
 
@@ -21,9 +22,9 @@ class ApiHelper {
     }
 
     private suspend fun HttpClient.downloadFile(
-        file: File,
-        url: String,
-        headersList: List<Pair<String, String>>
+            file: File,
+            url: String,
+            headersList: List<Pair<String, String>>
     ): Flow<DownloadResult> {
         return flow {
             try {
@@ -73,8 +74,10 @@ class ApiHelper {
                 }
             } catch (e: TimeoutCancellationException) {
                 emit(DownloadResult.Error("Connection timed out", e))
-            } catch (t: Throwable) {
+            } catch (t: HTTPException) {
                 emit(DownloadResult.Error("Failed to connect", Exception(t)))
+            } catch (t: Throwable) {
+                emit(DownloadResult.Error("Error", Exception(t)))
             }
         }
     }

@@ -3,7 +3,6 @@ package utils
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import java.lang.reflect.Type
-import java.math.RoundingMode
 import kotlin.coroutines.CoroutineContext
 
 
@@ -14,10 +13,10 @@ import kotlin.coroutines.CoroutineContext
  * @param predicate function equals
  */
 fun <T> arraysDiff(
-    newList: ArrayList<T>?,
-    oldList: ArrayList<T>,
-    fillAll: Boolean = false,
-    predicate: (firstItem: T, secondItem: T) -> Boolean
+        newList: ArrayList<T>?,
+        oldList: ArrayList<T>,
+        fillAll: Boolean = false,
+        predicate: (firstItem: T, secondItem: T) -> Boolean
 ): ArrayList<T> {
     if (newList.isNullOrEmpty()) return oldList
     if (newList.isEmpty() && oldList.isNotEmpty()) return oldList
@@ -55,9 +54,9 @@ fun <T> List<T>.isEquals(newList: List<T>?, predicate: ((old: T, new: T) -> Bool
  * @param predicate function equals
  */
 fun <T> arraysStrongEquals(
-    newList: List<T>?,
-    oldList: List<T>,
-    predicate: ((old: T, new: T) -> Boolean?)? = null
+        newList: List<T>?,
+        oldList: List<T>,
+        predicate: ((old: T, new: T) -> Boolean?)? = null
 ): Boolean {
     if (newList.isNullOrEmpty()) return false
     if (newList.isEmpty() && oldList.isNotEmpty()) return false
@@ -219,13 +218,13 @@ fun Any?.empty(): Boolean {
 }
 
 fun <T> launchAsync(
-    block: suspend () -> T,
-    onComplete: (T) -> Unit = {},
-    onError: (Throwable) -> Unit = {},
-    onCanceled: (CancellationException) -> Unit = {},
-    dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    name: String = "",
-    context: CoroutineContext = Dispatchers.Default + SupervisorJob() + CoroutineName(name)
+        block: suspend () -> T,
+        onComplete: (T) -> Unit = {},
+        onError: (Throwable) -> Unit = {},
+        onCanceled: (CancellationException) -> Unit = {},
+        dispatcher: CoroutineDispatcher = Dispatchers.IO,
+        name: String = "",
+        context: CoroutineContext = Dispatchers.Default + SupervisorJob() + CoroutineName(name)
 ): Job {
     return CoroutineScope(context).launch {
         try {
@@ -246,9 +245,9 @@ fun Job.addTo(compositeJob: CompositeJob) {
 }
 
 fun <T> CoroutineScope.launch(
-    block: suspend (CoroutineScope) -> T,
-    onError: (Throwable) -> Unit = {},
-    onCanceled: () -> Unit = {}
+        block: suspend (CoroutineScope) -> T,
+        onError: (Throwable) -> Unit = {},
+        onCanceled: () -> Unit = {}
 ): Job {
     return this.launch {
         try {
@@ -270,7 +269,22 @@ fun getHexColor(color: Int): String {
     return String.format("#%06X", (0xFFFFFF and color))
 }
 
-fun getPercent(current: Int, total: Int): Double {
-    return ((current.toDouble() / total.toDouble()) * 100.0).toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-        .toDouble()
+fun getPercent(current: Int, total: Int, start: Int? = null): Double {
+    return getPercent(current.toDouble(), total.toDouble(), start?.toDouble(), 2)
+}
+
+private fun getPercent(
+        current: Double,
+        total: Double,
+        start: Double? = null,
+        scale: Int = 2
+): Double {
+    try {
+        if (start != null) {
+            return ((current - start) / (total.minus(start))) * 100.0
+        }
+        return (current / total) * 100.0
+    } catch (e: Exception) {
+        return 0.0
+    }
 }
