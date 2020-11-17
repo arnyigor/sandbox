@@ -1,12 +1,22 @@
 package ui;
 
-import presentation.MainFormPresenter;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.WindowConstants;
+
+import presentation.MainFormPresenter;
 
 public class MainFrame extends JDialog {
     private final MainFormPresenter mainFormPresenter;
@@ -45,6 +55,8 @@ public class MainFrame extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        pack();
+        setVisible(true);
     }
 
     private void initUI() {
@@ -84,7 +96,6 @@ public class MainFrame extends JDialog {
     }
 
     private void onCalc() {
-        labelResult.setText(mainFormPresenter.calcSun(edtField.getText()));
     }
 
     private void onCalcGeoTime() {
@@ -92,7 +103,6 @@ public class MainFrame extends JDialog {
         int returnVal = chooser.showOpenDialog(contentPane);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-            mainFormPresenter.timeGeoCalc(absolutePath);
         }
     }
 

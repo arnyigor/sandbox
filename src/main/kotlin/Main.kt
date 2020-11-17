@@ -1,3 +1,6 @@
+import ui.MainFrame
+
 fun main(args: Array<String>) {
-    MainForm()
+//    MainForm()
+    MainFrame()
 }

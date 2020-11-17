@@ -1,10 +1,9 @@
 package utils
 
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import java.io.*
 import java.text.DecimalFormat
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -46,3 +45,18 @@ fun formatFileSize(size: Long, digits: Int): String? {
     }
     return (DecimalFormat("#,##0.$digs").format(size / 1024.0.pow(digitGroups.toDouble())) + " " + units[digitGroups])
 }
+
+@Throws(IOException::class)
+fun compress(data: String): ByteArray {
+    val bos = ByteArrayOutputStream()
+    GZIPOutputStream(bos).bufferedWriter(Charsets.UTF_8).use { it.write(data) }
+    return bos.toByteArray()
+}
+
+@Throws(IOException::class)
+fun decompress(compressed: ByteArray): String {
+    return GZIPInputStream(compressed.inputStream()).bufferedReader(Charsets.UTF_8).use { it.readText() }
+}
+
+fun ByteArray.toHex() = this.joinToString(separator = "") { it.toInt().and(0xff).toString(16).padStart(2, '0') }
+fun String.hexStringToByteArray() = ByteArray(this.length / 2) { this.substring(it * 2, it * 2 + 2).toInt(16).toByte() }

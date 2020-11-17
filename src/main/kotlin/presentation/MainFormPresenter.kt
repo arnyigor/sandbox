@@ -1,19 +1,17 @@
 package presentation
 
 import data.api.github.GithubRepository
-import data.astro.AstroCalculator
-import data.astro.TimeGeoCalc
 import data.files.FileTransfer
 import data.files.IFileTransfer
 import data.network.ApiHelper
 import data.network.DownloadResult
+import domain.files.FilesInteractor
 import domain.main.MainInteractor
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.apache.commons.io.FileUtils
-import org.joda.time.DateTime
 import utils.getPercent
 import utils.isFileExist
 import utils.launchAsync
@@ -31,10 +29,9 @@ class MainFormPresenter {
     private var start = 0
     private var end = 0
     private val fileTransfer: IFileTransfer = FileTransfer()
-    private val astroCalculator: AstroCalculator = AstroCalculator()
-    private val timeGeoCalc: TimeGeoCalc = TimeGeoCalc()
     private val githubRepository = GithubRepository()
     private val mainInteractor = MainInteractor()
+    private val filesInteractor = FilesInteractor()
     private val fileReader: MyFileReader = CsvFileReader()
     private val apiHelper: ApiHelper = ApiHelper()
     private var mainView: MainFormView? = null
@@ -46,25 +43,7 @@ class MainFormPresenter {
     }
 
     fun onOkClicked() {
-        mainInteractor.runTest()
-    }
-
-    fun calcSun(text: String): String? {
-        return try {
-            val split = text.split(";")
-            val date = split[0].toIntOrNull() ?: 1
-            val lat = split[1].toDoubleOrNull() ?: 0.0
-            val lon = split[2].toDoubleOrNull() ?: 0.0
-            val localZone = split[3].toDoubleOrNull() ?: 0.0
-            astroCalculator.calc(DateTime.now().millis, lat, lon, localZone)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    fun timeGeoCalc(absolutePath: String) {
-        timeGeoCalc.readFile(absolutePath)
+        filesInteractor.packArrayData()
     }
 
     fun convertFileToString(absolutePath: String) {
