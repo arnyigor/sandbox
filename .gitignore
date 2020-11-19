@@ -92,3 +92,5 @@ lint/tmp/
 *.ts
 src/main/java/algoritms/
 src/main/kotlin/di/
+
+config.properties

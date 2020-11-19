@@ -1,24 +1,15 @@
-package ui;
+package ui.mainframe;
 
-import java.awt.Toolkit;
+import presentation.mainform.MainFormPresenter;
+import presentation.mainform.MainFormView;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
-
-import presentation.MainFormPresenter;
-
-public class MainFrame extends JDialog {
+public class MainFrame extends JDialog implements MainFormView {
     private final MainFormPresenter mainFormPresenter;
     private JPanel contentPane;
     private JButton buttonOK;
@@ -33,7 +24,7 @@ public class MainFrame extends JDialog {
     private JLabel labelResult;
 
     public MainFrame() {
-        mainFormPresenter = new MainFormPresenter();
+        mainFormPresenter = new MainFormPresenter(this);
         initUI();
 
         buttonOK.addActionListener(e -> onOK());
@@ -140,5 +131,10 @@ public class MainFrame extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    @Override
+    public void setUIEnabled(boolean enabled) {
+
     }
 }

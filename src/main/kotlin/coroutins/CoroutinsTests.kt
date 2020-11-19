@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.*
 import utils.Stopwatch
 import kotlin.coroutines.CoroutineContext
 
-@ExperimentalCoroutinesApi
 class CoroutinsTests : Testable, CoroutineScope, AutoCloseable {
     private lateinit var stopwatch: Stopwatch
     override val coroutineContext: CoroutineContext

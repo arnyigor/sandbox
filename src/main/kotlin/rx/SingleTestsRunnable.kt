@@ -78,7 +78,6 @@ class SingleTestsRunnable : Testable {
     }
 
     private fun getAccounts(): List<Account> {
-        val element = Account("AE-356", 356)
         return emptyList()
     }
 }

@@ -1,6 +1,4 @@
-package presentation
-
-import xls.XlsFileData
+package xls
 
 class XlsToDatabaseFileConverter(private val list: List<XlsFileData>) {
     fun convert(): String {
