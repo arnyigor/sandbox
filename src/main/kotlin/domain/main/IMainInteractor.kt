@@ -1,5 +1,5 @@
 package domain.main
 
 interface IMainInteractor {
-    fun runTest()
+    fun runTest(type: TestType)
 }

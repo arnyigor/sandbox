@@ -6,6 +6,9 @@ import data.files.IFileTransfer
 import data.network.ApiHelper
 import data.network.DownloadResult
 import domain.files.FilesInteractor
+import domain.main.IMainInteractor
+import domain.main.MainInteractor
+import domain.main.TestType
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +38,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     private val fileTransfer: IFileTransfer = FileTransfer()
     private val githubRepository = GithubRepository()
     private val filesInteractor = FilesInteractor()
+    private val interactor: IMainInteractor = MainInteractor()
     private val fileReader: MyFileReader = CsvFileReader()
     private val apiHelper: ApiHelper = ApiHelper()
     var ffmpegPath: String? = null
@@ -43,7 +47,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     }
 
     fun onOkClicked() {
-        filesInteractor.packArrayData()
+        interactor.runTest(TestType.KOTLIN)
     }
 
     fun convertFileToString(absolutePath: String) {
