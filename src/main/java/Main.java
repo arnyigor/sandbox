@@ -1,7 +1,7 @@
-import ui.Starter;
+import regex.ExpressionTests;
 
 public class Main {
     public static void main(String[] args) {
-        new Starter();
+        new ExpressionTests().runTest(null);
     }
 }

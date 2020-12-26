@@ -1,14 +1,16 @@
+package domain.main
+
 import interfaces.Testable
 import rx.CompletableTests
 import utils.JavaRunnerTestable
+import utils.ParsingUtils
 import utils.dump
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 class KotlinRunnerTestable : Testable {
     override fun runTest(args: Array<String>?) {
-        val stringVal = "000"
-        println("$stringVal==zero->" + !BigDecimal(stringVal).notEquals(BigDecimal.ZERO))
+        ParsingUtils().readFile()
     }
 
     private fun isRateZero(stringRate: String) =

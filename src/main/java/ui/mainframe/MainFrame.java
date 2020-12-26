@@ -1,13 +1,20 @@
 package ui.mainframe;
 
-import presentation.mainform.MainFormPresenter;
-import presentation.mainform.MainFormView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import presentation.mainform.MainFormPresenter;
+import presentation.mainform.MainFormView;
 
 public class MainFrame extends JDialog implements MainFormView {
     private final MainFormPresenter mainFormPresenter;
@@ -36,8 +43,6 @@ public class MainFrame extends JDialog implements MainFormView {
         buttonAuth.addActionListener(e -> onAuth());
         buttonCancel.addActionListener(e -> onCancel());
 
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
@@ -45,7 +50,6 @@ public class MainFrame extends JDialog implements MainFormView {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         pack();
         setVisible(true);
     }
@@ -83,10 +87,11 @@ public class MainFrame extends JDialog implements MainFormView {
     }
 
     private void onOK() {
-        mainFormPresenter.onOkClicked();
+        mainFormPresenter.test();
     }
 
     private void onCalc() {
+        mainFormPresenter.onOkClicked();
     }
 
     private void onCalcGeoTime() {
