@@ -1,22 +1,15 @@
 package ui.mainframe;
 
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
-
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 public class MainFrame extends JDialog implements MainFormView {
+    private String[] args;
     private final MainFormPresenter mainFormPresenter;
     private JPanel contentPane;
     private JButton buttonOK;
@@ -30,7 +23,8 @@ public class MainFrame extends JDialog implements MainFormView {
     private JTextField edtField;
     private JLabel labelResult;
 
-    public MainFrame() {
+    public MainFrame(String[] args) {
+        this.args = args;
         mainFormPresenter = new MainFormPresenter(this);
         initUI();
 
@@ -43,13 +37,13 @@ public class MainFrame extends JDialog implements MainFormView {
         buttonAuth.addActionListener(e -> onAuth());
         buttonCancel.addActionListener(e -> onCancel());
 
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
         });
-
-        // call onCancel() on ESCAPE
         pack();
         setVisible(true);
     }
@@ -81,17 +75,15 @@ public class MainFrame extends JDialog implements MainFormView {
                 (Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - getWidth() / 2,
                 (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - getHeight() / 2
         );
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
     }
 
     private void onOK() {
-        mainFormPresenter.test();
+        mainFormPresenter.onOkClicked();
     }
 
     private void onCalc() {
-        mainFormPresenter.onOkClicked();
     }
 
     private void onCalcGeoTime() {
@@ -115,7 +107,7 @@ public class MainFrame extends JDialog implements MainFormView {
         JFileChooser chooser = new JFileChooser();
         int returnVal = chooser.showOpenDialog(contentPane);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            mainFormPresenter.readXls(chooser.getSelectedFile().getAbsolutePath());
+            mainFormPresenter.readHtml(chooser.getSelectedFile().getAbsolutePath());
         }
     }
 
@@ -130,11 +122,10 @@ public class MainFrame extends JDialog implements MainFormView {
     }
 
     private void onAuth() {
-        mainFormPresenter.auth();
+        mainFormPresenter.auth(args);
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 

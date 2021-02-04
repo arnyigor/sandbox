@@ -94,3 +94,4 @@ src/main/java/algoritms/
 src/main/kotlin/di/
 
 config.properties
+*.json

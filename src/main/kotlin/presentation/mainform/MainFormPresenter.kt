@@ -3,6 +3,7 @@ package presentation.mainform
 import data.api.github.GithubRepository
 import data.files.FileTransfer
 import data.files.IFileTransfer
+import data.firestore.FirestoreCredentials
 import data.network.ApiHelper
 import data.network.DownloadResult
 import domain.files.FilesInteractor
@@ -54,14 +55,9 @@ class MainFormPresenter(private val mainView: MainFormView) {
         fileTransfer.fileToString(absolutePath)
     }
 
-    fun auth() {
-        githubRepository.test()
-            .observeOn(Schedulers.trampoline())
-            .subscribe({
-                println("Result $it")
-            }, {
-                it.printStackTrace()
-            })
+    fun auth(args: Array<String>) {
+        val path = args.getOrNull(0)?:""
+        val credentials = FirestoreCredentials(path)
     }
 
     fun convertStringToFile(absolutePath: String, result: String) {
@@ -216,5 +212,18 @@ class MainFormPresenter(private val mainView: MainFormView) {
         this.start = fromStr.toIntOrNull() ?: 0
         this.end = toStr.toIntOrNull() ?: 0
         this.absolutePath = absolutePath
+    }
+
+    fun readHtml(absolutePath: String) {
+        val text = File(absolutePath).readText()
+        val substringBefore = text.substringAfter("<tfoot>")
+            .substringBefore("</tfoot>")
+            .substringAfter("class=\"bar\">")
+            .substringBefore("</td>")
+        val split = substringBefore.split("of")
+            .map { it.replace("\\s+".toRegex(),"") }
+            .map { it.replace("NBSP".toRegex(),"") }
+            .toList()
+        split
     }
 }

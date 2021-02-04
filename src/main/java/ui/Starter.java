@@ -16,19 +16,21 @@ import java.awt.event.ActionEvent;
  * @author Arny
  */
 public class Starter extends JFrame {
-    public Starter() {
+    private String[] args;
+    public Starter(String[] args) {
+        this.args = args;
         setLocation(
                 (Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - getWidth() / 2,
                 (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - getHeight() / 2
         );
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initComponents();
         pack();
         setVisible(true);
     }
 
     private void menuItem1ActionPerformed(ActionEvent e) {
-        new MainFrame();
+        new MainFrame(args);
         dispose();
     }
 

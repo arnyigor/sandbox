@@ -20,6 +20,8 @@ public class MainForm extends JFrame implements MainFormView {
 
     public MainForm() {
         initComponents();
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        pack();
         setVisible(true);
     }
 
