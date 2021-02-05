@@ -1,6 +1,5 @@
 package domain.main
 
-import KotlinRunnerTestable
 import coroutins.CoroutinsTests
 import rx.CompletableTests
 import rx.SingleTestsRunnable

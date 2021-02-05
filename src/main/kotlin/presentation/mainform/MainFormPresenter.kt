@@ -55,9 +55,10 @@ class MainFormPresenter(private val mainView: MainFormView) {
         fileTransfer.fileToString(absolutePath)
     }
 
-    fun auth(args: Array<String>) {
-        val path = args.getOrNull(0)?:""
+    fun auth(path: String) {
         val credentials = FirestoreCredentials(path)
+        val documents = credentials.getDbCollectionDocuments("allsources")
+        println(documents)
     }
 
     fun convertStringToFile(absolutePath: String, result: String) {

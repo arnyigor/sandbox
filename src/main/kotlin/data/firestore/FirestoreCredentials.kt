@@ -10,6 +10,7 @@ import java.io.FileInputStream
 
 class FirestoreCredentials(keyPath: String) {
     private var db: Firestore
+
     init {
         val serviceAccount = FileInputStream(keyPath)
         val options = FirebaseOptions.builder()
@@ -18,6 +19,12 @@ class FirestoreCredentials(keyPath: String) {
 
         FirebaseApp.initializeApp(options)
         db = FirestoreClient.getFirestore()
-        println(db.collection("allsources"))
+    }
+
+    fun getDbCollectionDocuments(collection: String): List<MutableMap<String, Any>> {
+        return db.collection(collection).listDocuments().map {
+            val snapshot = it.get().get()
+            snapshot.data
+        }.mapNotNull { it }
     }
 }
