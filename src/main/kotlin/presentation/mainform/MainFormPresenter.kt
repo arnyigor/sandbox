@@ -7,6 +7,8 @@ import data.firestore.FirestoreCredentials
 import data.network.ApiHelper
 import data.network.DownloadResult
 import domain.files.FilesInteractor
+import domain.firebase.FirestoreInteractor
+import domain.firebase.FirestoreInteractorImpl
 import domain.main.IMainInteractor
 import domain.main.MainInteractor
 import domain.main.TestType
@@ -43,6 +45,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     private val fileReader: MyFileReader = CsvFileReader()
     private val apiHelper: ApiHelper = ApiHelper()
     var ffmpegPath: String? = null
+    private var firestoreInteractor: FirestoreInteractor? = null
     private var loadingMode by Delegates.observable(false) { _, _, loading ->
         mainView.setUIEnabled(!loading)
     }
@@ -55,10 +58,18 @@ class MainFormPresenter(private val mainView: MainFormView) {
         fileTransfer.fileToString(absolutePath)
     }
 
-    fun auth(path: String) {
-        val credentials = FirestoreCredentials(path)
-        val documents = credentials.getDbCollectionDocuments("allsources")
-        println(documents)
+    fun initFirestore(path: String) {
+        firestoreInteractor = FirestoreInteractorImpl(FirestoreCredentials(path))
+        mainView.showFirestoreFilePath(path)
+    }
+
+    fun readFireStore(){
+        val sources = firestoreInteractor?.read("allsources")
+        println(sources)
+    }
+
+    fun auth() {
+        githubRepository.getGists()
     }
 
     fun convertStringToFile(absolutePath: String, result: String) {
@@ -140,7 +151,11 @@ class MainFormPresenter(private val mainView: MainFormView) {
         }
     }
 
-    fun processFiles(fileName: String, onProgress: (progress: Int) -> Unit, onSuccess: (res: String) -> Unit) {
+    fun processFiles(
+        fileName: String,
+        onProgress: (progress: Int) -> Unit,
+        onSuccess: (res: String) -> Unit
+    ) {
         loadingMode = true
         absolutePath?.let { path ->
             launchAsync({
@@ -185,7 +200,8 @@ class MainFormPresenter(private val mainView: MainFormView) {
                 val name = it.absolutePath.substringAfterLast(File.separator)
                 if (name.contains(".ts")) {
                     val doubleSeparator = File.separator + File.separator
-                    val newPath = path.replace(File.separator, doubleSeparator) + doubleSeparator + name
+                    val newPath =
+                        path.replace(File.separator, doubleSeparator) + doubleSeparator + name
                     val content = "file $newPath\n"
                     sb.append(content)
                 }
@@ -207,7 +223,13 @@ class MainFormPresenter(private val mainView: MainFormView) {
         } ?: throw Exception("absolutePath is null")
     }
 
-    fun savePath(absolutePath: String, cookie: String, url: String, fromStr: String, toStr: String) {
+    fun savePath(
+        absolutePath: String,
+        cookie: String,
+        url: String,
+        fromStr: String,
+        toStr: String
+    ) {
         this.cookie = cookie
         this.tsUrlWithoutEndIterate = url
         this.start = fromStr.toIntOrNull() ?: 0
@@ -222,8 +244,8 @@ class MainFormPresenter(private val mainView: MainFormView) {
             .substringAfter("class=\"bar\">")
             .substringBefore("</td>")
         val split = substringBefore.split("of")
-            .map { it.replace("\\s+".toRegex(),"") }
-            .map { it.replace("NBSP".toRegex(),"") }
+            .map { it.replace("\\s+".toRegex(), "") }
+            .map { it.replace("NBSP".toRegex(), "") }
             .toList()
         split
     }

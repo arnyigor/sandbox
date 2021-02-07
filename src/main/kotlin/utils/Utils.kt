@@ -1,6 +1,9 @@
 package utils
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import kotlinx.coroutines.*
 import java.lang.reflect.Type
 import kotlin.coroutines.CoroutineContext
@@ -155,6 +158,15 @@ fun Any?.toJson(): String? {
 
 fun <T> Any?.fromJson(cls: Class<T>): T? {
     return Gson().fromJson(this.toString(), cls)
+}
+
+fun <T> String?.fromJson(clazz: Class<*>, deserialize: (JsonElement) -> T): T {
+    return GsonBuilder()
+        .registerTypeAdapter(
+            clazz,
+            JsonDeserializer { json, _, _ -> deserialize.invoke(json) }
+        )
+        .create().fromJson<T>(this, clazz)
 }
 
 fun <T> Any?.fromJson(type: Type?): T? {
