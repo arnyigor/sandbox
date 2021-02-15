@@ -1,7 +1,22 @@
 package leetcode_problems
 
 fun main() {
-    println(romanToInt("MLXC"))
+    println(
+        longestCommonPrefix(
+            arrayOf(
+                "flower", "flow", "flight"
+            )
+        )
+    )
+}
+
+fun longestCommonPrefix(strs: Array<String>): String {
+    var pref = ""
+    for (str in strs) {
+        pref = str
+        val contains = strs.contains(pref)
+    }
+    return pref
 }
 
 fun romanToInt(s: String): Int {
