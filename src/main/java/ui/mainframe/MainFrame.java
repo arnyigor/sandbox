@@ -1,19 +1,13 @@
 package ui.mainframe;
 
-import java.awt.Toolkit;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
+import org.jetbrains.annotations.NotNull;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainFrame extends JDialog implements MainFormView {
     private String[] args;
@@ -53,6 +47,11 @@ public class MainFrame extends JDialog implements MainFormView {
         });
         pack();
         setVisible(true);
+    }
+
+    @Override
+    public void showFirestoreFilePath(@NotNull String path) {
+
     }
 
     private void initUI() {
@@ -129,12 +128,7 @@ public class MainFrame extends JDialog implements MainFormView {
     }
 
     private void onAuth() {
-        JFileChooser chooser = new JFileChooser();
-        int returnVal = chooser.showOpenDialog(contentPane);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-            mainFormPresenter.auth(absolutePath);
-        }
+        mainFormPresenter.auth();
     }
 
     private void onCancel() {

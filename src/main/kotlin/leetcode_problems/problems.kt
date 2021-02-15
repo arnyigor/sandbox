@@ -1,5 +1,105 @@
 package leetcode_problems
 
+fun main() {
+    println(romanToInt("MLXC"))
+}
+
+fun romanToInt(s: String): Int {
+    var num = 0
+    val chars = s.toCharArray()
+    val size = chars.size
+    var ignoreNext = false
+    for ((i, roman) in chars.withIndex()) {
+        if (ignoreNext) {
+            ignoreNext = false
+            continue
+        }
+        val hasNextChar = i < size - 1
+        val temp = when {
+            hasNextChar && roman == 'C' -> {
+                when (chars[i + 1]) {
+                    'D' -> {
+                        ignoreNext = true
+                        400
+                    }
+                    'M' -> {
+                        ignoreNext = true
+                        900
+                    }
+                    else -> getNum(roman)
+                }
+            }
+            hasNextChar && roman == 'X' -> {
+                when (chars[i + 1]) {
+                    'L' -> {
+                        ignoreNext = true
+                        40
+                    }
+                    'C' -> {
+                        ignoreNext = true
+                        90
+                    }
+                    else -> getNum(roman)
+                }
+            }
+            hasNextChar && roman == 'I' -> {
+                when (chars[i + 1]) {
+                    'V' -> {
+                        ignoreNext = true
+                        4
+                    }
+                    'X' -> {
+                        ignoreNext = true
+                        9
+                    }
+                    else -> getNum(roman)
+                }
+            }
+            else -> getNum(roman)
+        }
+        num += temp
+    }
+    return num
+}
+
+fun getNum(c: Char): Int = when (c) {
+    'I' -> 1
+    'V' -> 5
+    'X' -> 10
+    'L' -> 50
+    'C' -> 100
+    'D' -> 500
+    'M' -> 1000
+    else -> 0
+}
+
+fun isPalindrome(x: Int): Boolean {
+    val chArr = x.toString().toCharArray()
+    var front = 0
+    var back = chArr.size - 1
+    while (front != back) {
+        if (chArr[front] != chArr[back]) {
+            return false
+        }
+        front++
+        back--
+        if (front > back)
+            break
+    }
+    return true
+}
+
+fun isPalindrome1(x: Int): Boolean {
+    var rev = 0
+    var n = x
+    while (n > 0) {
+        val last = n % 10
+        n /= 10
+        rev = rev * 10 + last
+    }
+    return rev == x
+}
+
 fun reverse(num: Int): Int {
     if (num >= Int.MAX_VALUE) return 0
     var input = num
@@ -15,12 +115,46 @@ fun reverse(num: Int): Int {
         buffer.append(chArr[ch])
     }
     val resString = buffer.toString()
-    if (resString.length >= 9 && buffer.first().toInt() > 0) {
-        //todo
-    }
-    return resString.toInt() * sign
+    val intOrNull = resString.toIntOrNull() ?: return 0
+    return intOrNull * sign
 }
 
+fun isValid(s: String): Boolean {
+    val openAr = arrayOf("(", "{", "[")
+    val closeAr = arrayOf(")", "}", "]")
+    val chAr = s.toCharArray()
+    val opened = arrayOfNulls<String>(chAr.size)
+    var lastOpen = 0
+    for (c in chAr.withIndex()) {
+        val opInd = openAr.indexOf(c.value.toString())
+        if (opInd != -1) {
+            opened[lastOpen] = openAr[opInd]
+            lastOpen++
+        }
+        val clInd = closeAr.indexOf(c.value.toString())
+        if (clInd != -1) {
+            val lastInd = lastOpen - 1
+            if (lastInd != -1) {
+                val last = opened[lastInd]
+                val openCh = openAr[clInd]
+                if (openCh == last) {
+                    opened[lastInd] = null
+                    lastOpen--
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+    }
+    for (op in opened) {
+        if (op != null) {
+            return false
+        }
+    }
+    return true
+}
 
 fun stringCompress(input: String): String {
     var currentChar: Char? = null
@@ -59,13 +193,13 @@ fun totalCountChars(input: String): String {
     var currentChar: Char? = null
     val iterator = chArray.iterator()
     var currentCount = 0
-    while (iterator.hasNext()){
+    while (iterator.hasNext()) {
         val next = iterator.next()
         if (currentChar == null) {
             currentChar = next
             iterator.remove()
             currentCount++
-        }else{
+        } else {
             if (currentChar == next) {
                 iterator.remove()
                 currentCount++
@@ -81,10 +215,10 @@ fun sortMassive(arr: Array<Int>) {
     val size = arr.size
     while (ind < size - 1) {
         val arValue = arr[ind]
-        if(cur==null){
+        if (cur == null) {
             cur = arValue
-        }else{
-            if(arValue<cur){
+        } else {
+            if (arValue < cur) {
                 cur
             }
         }

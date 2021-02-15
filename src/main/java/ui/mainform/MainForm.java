@@ -1,6 +1,7 @@
 package ui.mainform;
 
 import kotlin.Unit;
+import org.jetbrains.annotations.NotNull;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
 
@@ -66,6 +67,11 @@ public class MainForm extends JFrame implements MainFormView {
             label1.setText("Files download success");
             return Unit.INSTANCE;
         });
+    }
+
+    @Override
+    public void showFirestoreFilePath(@NotNull String path) {
+
     }
 
     private void initComponents() {
