@@ -2,20 +2,30 @@ package leetcode_problems
 
 fun main() {
     println(
-        longestCommonPrefix(
+        /*longestCommonPrefix(
             arrayOf(
-                "flower", "flow", "flight", "fight"
+                "flower", "flow", "flight", "ight"
             )
-        )
+        )*/
     )
+}
+
+fun arraydiff(arr1: IntArray, arr2: IntArray):Int {
+    return 0
 }
 
 fun longestCommonPrefix(strs: Array<String>): String {
     var pref = ""
-    var maxSize = 0
-    for ((i, str) in strs.withIndex()) {
-        pref = str
-        maxSize = pref.length
+    for (str in strs) {
+        if (str.isNotBlank()) {
+            for (i in str.length - 1 downTo 1) {
+                val tmp = str.substring(0, i)
+
+            }
+        }
+        val contains = strs.contains(pref)
+    }
+    for (str in strs) {
         val contains = strs.contains(pref)
     }
     return pref
@@ -104,6 +114,17 @@ fun isPalindrome(x: Int): Boolean {
             break
     }
     return true
+}
+
+fun reversed(x: Int): Int {
+    var rev = 0
+    var n = x
+    while (n > 0) {
+        val last = n % 10
+        n /= 10
+        rev = rev * 10 + last
+    }
+    return rev
 }
 
 fun isPalindrome1(x: Int): Boolean {
