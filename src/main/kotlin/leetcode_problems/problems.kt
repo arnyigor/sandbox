@@ -4,7 +4,7 @@ fun main() {
     println(
         longestCommonPrefix(
             arrayOf(
-                "flower", "flow", "flight"
+                "flower", "flow", "flight", "fight"
             )
         )
     )
@@ -12,8 +12,10 @@ fun main() {
 
 fun longestCommonPrefix(strs: Array<String>): String {
     var pref = ""
-    for (str in strs) {
+    var maxSize = 0
+    for ((i, str) in strs.withIndex()) {
         pref = str
+        maxSize = pref.length
         val contains = strs.contains(pref)
     }
     return pref

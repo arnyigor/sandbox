@@ -51,7 +51,7 @@ public class MainFrame extends JDialog implements MainFormView {
 
     @Override
     public void showFirestoreFilePath(@NotNull String path) {
-
+        labelResult.setText(path);
     }
 
     private void initUI() {
@@ -128,7 +128,11 @@ public class MainFrame extends JDialog implements MainFormView {
     }
 
     private void onAuth() {
-        mainFormPresenter.auth();
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(contentPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            mainFormPresenter.initFirestore(chooser.getSelectedFile().getAbsolutePath());
+        }
     }
 
     private void onCancel() {
