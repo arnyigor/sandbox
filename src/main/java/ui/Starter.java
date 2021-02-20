@@ -4,6 +4,7 @@
 
 package ui;
 
+import ui.firebase.FireBaseForm;
 import ui.mainform.MainForm;
 import ui.mainframe.MainFrame;
 import ui.videoencoding.VideoEncodingForm;
@@ -17,6 +18,7 @@ import java.awt.event.ActionEvent;
  */
 public class Starter extends JFrame {
     private String[] args;
+
     public Starter(String[] args) {
         this.args = args;
         setLocation(
@@ -44,6 +46,11 @@ public class Starter extends JFrame {
         dispose();
     }
 
+    private void menuItem4ActionPerformed(ActionEvent e) {
+        new FireBaseForm();
+        dispose();
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         menuBar1 = new JMenuBar();
@@ -51,6 +58,7 @@ public class Starter extends JFrame {
         menuItem1 = new JMenuItem();
         menuItem2 = new JMenuItem();
         menuItem3 = new JMenuItem();
+        menuItem4 = new JMenuItem();
 
         //======== this ========
         setResizable(false);
@@ -77,6 +85,11 @@ public class Starter extends JFrame {
                 menuItem3.setText("VideoEncoding");
                 menuItem3.addActionListener(e -> menuItem3ActionPerformed(e));
                 menu1.add(menuItem3);
+
+                //---- menuItem4 ----
+                menuItem4.setText("FirebaseFirestore");
+                menuItem4.addActionListener(e -> menuItem4ActionPerformed(e));
+                menu1.add(menuItem4);
             }
             menuBar1.add(menu1);
         }
@@ -90,7 +103,7 @@ public class Starter extends JFrame {
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
-                .addGap(0, 101, Short.MAX_VALUE)
+                .addGap(0, 109, Short.MAX_VALUE)
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -103,5 +116,6 @@ public class Starter extends JFrame {
     private JMenuItem menuItem1;
     private JMenuItem menuItem2;
     private JMenuItem menuItem3;
+    private JMenuItem menuItem4;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

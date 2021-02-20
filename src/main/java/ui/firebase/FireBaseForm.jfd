@@ -1,0 +1,46 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp lblFilePath:::::x, seq l {comp edtKey:::p:218:p, space u:::p, comp edtKeyValue:::::x}, seq {comp btnLoad:::p::p, space :::p, comp edtCollection:::p:193:p, space :::p, comp edtCollectionItem::::323:x}, comp edtAllData::l::606:x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp lblFilePath:::p:25:p, space :::p, par b {comp btnLoad::b:p::p, comp edtCollection::b:p::p, comp edtCollectionItem::b:p::p}, space :::p, par b {comp edtKey::b:p::p, comp edtKeyValue::b:p::p}, space :::p, comp edtAllData::::241:x, space :::p}}"
+		} ) {
+			name: "this"
+			"title": "Firebase FireStore"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblFilePath"
+				"text": "Choose path to access file"
+				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "label1MouseClicked", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "edtCollection"
+				"toolTipText": "Имя коллекции"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnLoad"
+				"text": "Load"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnLoadActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "edtKey"
+				"toolTipText": "Ключ"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "edtKeyValue"
+				"toolTipText": "Значение"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "edtCollectionItem"
+				"toolTipText": "Элемент коллекции"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "edtAllData"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 620, 380 )
+		} )
+	}
+}

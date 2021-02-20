@@ -3,7 +3,6 @@ package domain.firebase
 import com.google.cloud.firestore.SetOptions
 import data.firestore.FirestoreCredentials
 
-
 class FirestoreInteractorImpl(
     private val firestoreCredentials: FirestoreCredentials
 ) : FirestoreInteractor {
@@ -13,11 +12,15 @@ class FirestoreInteractorImpl(
             .collection(collection)
             .listDocuments().map {
                 val snapshot = it.get().get()
-                snapshot.data
-            }.mapNotNull { it }
+                val data = snapshot.data
+                hashMapOf<String, Any>().apply {
+                    data?.let { it1 -> putAll(it1) }
+                    put("id", snapshot.id)
+                }
+            }
     }
 
-   override fun addDocumentToCollection(collection: String, documentName: String, data: Map<String, Any>): Boolean {
+    override fun addDocumentToCollection(collection: String, documentName: String, data: Map<String, Any>): Boolean {
         return try {
             val result = firestoreCredentials.getDatabase()
                 .collection(collection)
@@ -32,7 +35,7 @@ class FirestoreInteractorImpl(
         }
     }
 
-   override fun deleteDocument(collection: String, documentName: String): Boolean {
+    override fun deleteDocument(collection: String, documentName: String): Boolean {
         return try {
             val result = firestoreCredentials.getDatabase()
                 .collection(collection).document(documentName).delete().get()
