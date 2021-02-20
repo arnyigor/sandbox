@@ -2,33 +2,49 @@ package leetcode_problems
 
 fun main() {
     println(
-        /*longestCommonPrefix(
-            arrayOf(
-                "flower", "flow", "flight", "ight"
-            )
-        )*/
+        mergeTwoLists(
+            ListNode(2, ListNode(3, ListNode(1))),
+            ListNode(3, ListNode(4, ListNode(2)))
+        )
     )
 }
 
-fun arraydiff(arr1: IntArray, arr2: IntArray):Int {
-    return 0
+data class ListNode(var `val`: Int, var next: ListNode? = null)
+
+fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? {
+    var head: ListNode? = l1
+    var cur: ListNode? = null
+    while (head != null) {
+        val num = head.`val`
+        if (cur == null) {
+            cur = ListNode(num, head)
+        } else {
+            val i = cur.`val`
+            if (i < num) {
+                cur = head
+            }
+        }
+        head = head.next
+    }
+    return null
+}
+
+fun arraydiff(arr1: IntArray, arr2: IntArray): Int {
+    var result = 0
+    arr1.forEach { result += it }
+    arr2.forEach { result -= it }
+    return result
 }
 
 fun longestCommonPrefix(strs: Array<String>): String {
-    var pref = ""
-    for (str in strs) {
-        if (str.isNotBlank()) {
-            for (i in str.length - 1 downTo 1) {
-                val tmp = str.substring(0, i)
-
-            }
+    if (strs.isNotEmpty()) {
+        val first = strs.first()
+        for (i in first.length downTo 1) {
+            val tmp = first.substring(0, i)
+            if (strs.all { cur -> cur.startsWith(tmp) }) return tmp
         }
-        val contains = strs.contains(pref)
     }
-    for (str in strs) {
-        val contains = strs.contains(pref)
-    }
-    return pref
+    return ""
 }
 
 fun romanToInt(s: String): Int {
