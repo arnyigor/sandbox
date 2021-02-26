@@ -1,5 +1,6 @@
 package presentation.firebasefirestore
 
+import com.google.gson.GsonBuilder
 import data.firestore.FirestoreCredentials
 import domain.firebase.FirestoreInteractor
 import domain.firebase.FirestoreInteractorImpl
@@ -13,6 +14,10 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
         firestoreInteractor = FirestoreInteractorImpl(FirestoreCredentials(path))
     }
 
+    private fun formatData(map: Map<String, Any>): String? {
+        return GsonBuilder().setPrettyPrinting().create().toJson(map)
+    }
+
     fun loadCollectionData(collectionName: String) {
         if (collectionName.isNotBlank()) {
             firestoreInteractor?.let {
@@ -20,7 +25,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                     .map {
                         StringBuilder().apply {
                             for (map in it) {
-                                append("Collection:$map\n")
+                                append("Collection:${formatData(map)}\n")
                             }
                         }.toString()
                     }
