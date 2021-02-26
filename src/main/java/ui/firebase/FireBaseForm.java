@@ -4,6 +4,7 @@
 
 package ui.firebase;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import presentation.firebasefirestore.FirebaseFirestorePresenter;
 import presentation.firebasefirestore.FirebaseFormView;
@@ -14,7 +15,6 @@ import java.awt.event.*;
 
 public class FireBaseForm extends JFrame implements FirebaseFormView {
     private final FirebaseFirestorePresenter presenter;
-    final JDialog dialog = new JDialog();
 
     public FireBaseForm() {
         presenter = new FirebaseFirestorePresenter(this);
@@ -50,6 +50,11 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     }
 
     @Override
+    public void showSuccess(@NotNull String message) {
+        JOptionPane.showMessageDialog(this, message, "Информация!", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
     public void setData(@Nullable String data) {
         edtAllData.setText(data);
     }
@@ -58,6 +63,16 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     public void setLoading(boolean loading) {
         btnLoad.setEnabled(!loading);
         btnLoad.setText(loading ? "Loading..." : "Load");
+        btnSend.setEnabled(!loading);
+        btnSend.setText(loading ? "Loading..." : "Load");
+    }
+
+    private void btnSendActionPerformed(ActionEvent e) {
+        presenter.sendData(edtCollection.getText(),
+                edtCollectionItem.getText(),
+                edtKey.getText(),
+                edtValue.getText()
+        );
     }
 
     private void initComponents() {
@@ -66,10 +81,11 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         edtCollection = new JTextField();
         btnLoad = new JButton();
         edtKey = new JTextField();
-        edtKeyValue = new JTextField();
+        edtValue = new JTextField();
         edtCollectionItem = new JTextField();
         scrollPane1 = new JScrollPane();
         edtAllData = new JTextArea();
+        btnSend = new JButton();
 
         //======== this ========
         setTitle("Firebase FireStore");
@@ -94,8 +110,8 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         //---- edtKey ----
         edtKey.setToolTipText("\u041a\u043b\u044e\u0447");
 
-        //---- edtKeyValue ----
-        edtKeyValue.setToolTipText("\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435");
+        //---- edtValue ----
+        edtValue.setToolTipText("\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435");
 
         //---- edtCollectionItem ----
         edtCollectionItem.setToolTipText("\u042d\u043b\u0435\u043c\u0435\u043d\u0442 \u043a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u0438");
@@ -104,6 +120,10 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         {
             scrollPane1.setViewportView(edtAllData);
         }
+
+        //---- btnSend ----
+        btnSend.setText("Send");
+        btnSend.addActionListener(e -> btnSendActionPerformed(e));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -117,13 +137,16 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
                         .addGroup(contentPaneLayout.createSequentialGroup()
                             .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(edtKeyValue))
+                            .addComponent(edtValue))
                         .addGroup(contentPaneLayout.createSequentialGroup()
                             .addComponent(btnLoad)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(edtCollectionItem, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)))
+                            .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnSend)
+                            .addGap(0, 86, Short.MAX_VALUE)))
                     .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
@@ -135,11 +158,12 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
                     .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(btnLoad)
                         .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSend))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(edtKeyValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(edtValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                     .addContainerGap())
@@ -154,9 +178,10 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     private JTextField edtCollection;
     private JButton btnLoad;
     private JTextField edtKey;
-    private JTextField edtKeyValue;
+    private JTextField edtValue;
     private JTextField edtCollectionItem;
     private JScrollPane scrollPane1;
     private JTextArea edtAllData;
+    private JButton btnSend;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

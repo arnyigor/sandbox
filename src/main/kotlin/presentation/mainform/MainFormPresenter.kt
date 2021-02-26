@@ -60,18 +60,6 @@ class MainFormPresenter(private val mainView: MainFormView) {
 
     fun initFirestore(path: String) {
         firestoreInteractor = FirestoreInteractorImpl(FirestoreCredentials(path))
-        readFireStore()
-    }
-
-    private fun readFireStore() {
-        val result = firestoreInteractor?.addDocumentToCollection(
-            "_",
-            "_",
-            hashMapOf(
-                "_" to "",
-            )
-        )
-        println(result)
     }
 
     fun auth() {

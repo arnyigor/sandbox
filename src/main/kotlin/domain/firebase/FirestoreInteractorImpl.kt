@@ -20,7 +20,7 @@ class FirestoreInteractorImpl(
             }
     }
 
-    override fun addDocumentToCollection(collection: String, documentName: String, data: Map<String, Any>): Boolean {
+    override fun setData(collection: String, documentName: String, data: Map<String, Any>): Boolean {
         return try {
             val result = firestoreCredentials.getDatabase()
                 .collection(collection)
