@@ -8,7 +8,6 @@ import kotlinx.coroutines.*
 import java.lang.reflect.Type
 import kotlin.coroutines.CoroutineContext
 
-
 /**
  * return items from second array wich not includes in first by custom diff in predicate
  * @param newList ArrayList of  T

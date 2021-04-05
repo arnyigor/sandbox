@@ -69,6 +69,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                         .subscribe({ success ->
                             if (success) {
                                 view?.showSuccess("Значения установлены")
+                                loadCollectionData(edtCollectionText)
                             } else {
                                 view?.showError("Значения не установлены")
                             }

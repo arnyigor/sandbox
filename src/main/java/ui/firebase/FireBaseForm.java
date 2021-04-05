@@ -62,9 +62,7 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     @Override
     public void setLoading(boolean loading) {
         btnLoad.setEnabled(!loading);
-        btnLoad.setText(loading ? "Loading..." : "Load");
         btnSend.setEnabled(!loading);
-        btnSend.setText(loading ? "Loading..." : "Load");
     }
 
     private void btnSendActionPerformed(ActionEvent e) {
