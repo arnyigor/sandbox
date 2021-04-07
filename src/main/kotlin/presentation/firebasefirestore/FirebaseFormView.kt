@@ -5,4 +5,5 @@ interface FirebaseFormView {
     fun setData(data: String?)
     fun setLoading(loading: Boolean)
     fun showSuccess(message: String)
+    fun setPathText(message: String)
 }

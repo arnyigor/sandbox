@@ -3,10 +3,10 @@ package presentation.videoencoding
 import kotlinx.coroutines.Job
 import utils.formattedFileSize
 import utils.launchAsync
+import utils.loadAppSettings
+import utils.saveAppSettings
 import videoencoding.IVideoEncoding
 import videoencoding.VideoEncoding
-import java.io.*
-import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -21,41 +21,11 @@ class VideoEncodingPresenter(private val view: VideoEncodingView) {
     private var filesPath: String? = null
 
     fun onInitUI() {
-        loadSettings()
+        val settings = loadAppSettings("ffmpegPath", "filesPath")
+        ffmpegPath = settings[ffmpegPath]
+        ffmpegPath = settings[filesPath]
         view.setLabel1Text("ffmpeg path:$ffmpegPath")
         view.setLabel2Text("filesPath path:$filesPath")
-    }
-
-    private fun saveSettings() {
-        val configFile = File("config.properties")
-        try {
-            val props = Properties()
-            props.setProperty("ffmpegPath", ffmpegPath)
-            props.setProperty("filesPath", filesPath)
-            val writer = FileWriter(configFile)
-            props.store(writer, "video settings")
-            writer.close()
-        } catch (ex: FileNotFoundException) {
-            ex.printStackTrace()
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        }
-    }
-
-    private fun loadSettings() {
-        val configFile = File("config.properties")
-        try {
-            val reader = FileReader(configFile)
-            val props = Properties()
-            props.load(reader)
-            ffmpegPath = props.getProperty("ffmpegPath")
-            filesPath = props.getProperty("filesPath")
-            reader.close()
-        } catch (ex: FileNotFoundException) {
-            ex.printStackTrace()
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        }
     }
 
     fun ffmpegPath(ffmpegPath: String) {
@@ -69,7 +39,13 @@ class VideoEncodingPresenter(private val view: VideoEncodingView) {
     }
 
     fun merge() {
-        saveSettings()
+        saveAppSettings(
+            properties = listOf(
+                "ffmpegPath" to ffmpegPath,
+                "filesPath" to filesPath
+            ),
+            comments = "video settings"
+        )
         loadingMode = true
         job = launchAsync({
             videEncoding = VideoEncoding(ffmpegPath!!)

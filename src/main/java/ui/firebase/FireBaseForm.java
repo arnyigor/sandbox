@@ -28,6 +28,11 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         });
         pack();
         setVisible(true);
+        loadSettings();
+    }
+
+    private void loadSettings() {
+        presenter.loadSettings();
     }
 
     private void label1MouseClicked(MouseEvent e) {
@@ -36,8 +41,12 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
             presenter.initFirestore(absolutePath);
-            lblFilePath.setText("File path:" + absolutePath);
         }
+    }
+
+    @Override
+    public void setPathText(@NotNull String absolutePath) {
+        lblFilePath.setText("File path:" + absolutePath);
     }
 
     private void btnLoadActionPerformed(ActionEvent e) {
@@ -55,14 +64,26 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     }
 
     @Override
-    public void setData(@Nullable String data) {
-        edtAllData.setText(data);
+    public void setData(String data) {
+        textPane1.setText(data);
     }
 
     @Override
     public void setLoading(boolean loading) {
+        if (loading) {
+            setTitle("Загрузка данных...подождите");
+        } else {
+            setTitle("Firebase FireStore");
+        }
         btnLoad.setEnabled(!loading);
         btnSend.setEnabled(!loading);
+        btnDuplicate.setEnabled(!loading);
+        edtCollection.setEnabled(!loading);
+        edtCollectionItem.setEnabled(!loading);
+        edtKey.setEnabled(!loading);
+        btnSaveSettings.setEnabled(!loading);
+        edtValue.setEnabled(!loading);
+        textPane1.setEnabled(!loading);
     }
 
     private void btnSendActionPerformed(ActionEvent e) {
@@ -73,6 +94,14 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         );
     }
 
+    private void btnSaveSettingsActionPerformed(ActionEvent e) {
+        presenter.savePathSettings();
+    }
+
+    private void btnDuplicateActionPerformed(ActionEvent e) {
+        presenter.duplicateData();
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         lblFilePath = new JLabel();
@@ -81,12 +110,15 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         edtKey = new JTextField();
         edtValue = new JTextField();
         edtCollectionItem = new JTextField();
-        scrollPane1 = new JScrollPane();
-        edtAllData = new JTextArea();
         btnSend = new JButton();
+        btnSaveSettings = new JButton();
+        scrollPane2 = new JScrollPane();
+        textPane1 = new JTextPane();
+        btnDuplicate = new JButton();
 
         //======== this ========
         setTitle("Firebase FireStore");
+        setResizable(false);
         Container contentPane = getContentPane();
 
         //---- lblFilePath ----
@@ -114,57 +146,76 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         //---- edtCollectionItem ----
         edtCollectionItem.setToolTipText("\u042d\u043b\u0435\u043c\u0435\u043d\u0442 \u043a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u0438");
 
-        //======== scrollPane1 ========
-        {
-            scrollPane1.setViewportView(edtAllData);
-        }
-
         //---- btnSend ----
         btnSend.setText("Send");
         btnSend.addActionListener(e -> btnSendActionPerformed(e));
 
+        //---- btnSaveSettings ----
+        btnSaveSettings.setText("Save path");
+        btnSaveSettings.addActionListener(e -> btnSaveSettingsActionPerformed(e));
+
+        //======== scrollPane2 ========
+        {
+            scrollPane2.setViewportView(textPane1);
+        }
+
+        //---- btnDuplicate ----
+        btnDuplicate.setText("Duplicate");
+        btnDuplicate.addActionListener(e -> btnDuplicateActionPerformed(e));
+
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                        .addComponent(lblFilePath, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                contentPaneLayout.createParallelGroup()
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(edtValue))
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(btnLoad)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnSend)
-                            .addGap(0, 86, Short.MAX_VALUE)))
-                    .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(btnSaveSettings))
+                                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                                .addComponent(btnLoad)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE))
+                                                                        .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(edtCollectionItem, GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                                                                        .addComponent(edtValue, GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(btnSend)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(btnDuplicate)))
+                                                .addGap(0, 11, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnLoad)
-                        .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSend))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(edtValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
-                    .addContainerGap())
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnSaveSettings))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnLoad)
+                                        .addComponent(edtCollection, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(edtCollectionItem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnSend)
+                                        .addComponent(btnDuplicate))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(edtValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -178,8 +229,10 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     private JTextField edtKey;
     private JTextField edtValue;
     private JTextField edtCollectionItem;
-    private JScrollPane scrollPane1;
-    private JTextArea edtAllData;
     private JButton btnSend;
+    private JButton btnSaveSettings;
+    private JScrollPane scrollPane2;
+    private JTextPane textPane1;
+    private JButton btnDuplicate;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

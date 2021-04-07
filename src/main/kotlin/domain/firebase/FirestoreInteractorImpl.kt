@@ -7,6 +7,12 @@ class FirestoreInteractorImpl(
     private val firestoreCredentials: FirestoreCredentials
 ) : FirestoreInteractor {
 
+    override fun readCollections(): List<String> {
+        return firestoreCredentials.getDatabase()
+            .listCollections()
+            .map { it.id }
+    }
+
     override fun read(collection: String): List<Map<String, Any>> {
         return firestoreCredentials.getDatabase()
             .collection(collection)
