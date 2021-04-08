@@ -4,8 +4,8 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane2::::626:x, seq {par l {seq {comp lblFilePath:::p:305:p, space :::p, comp btnSaveSettings:::p::p}, seq l {par l {seq {comp btnLoad:::p::p, space :::p, comp edtCollection:::p:152:p}, comp edtKey:::p:236:p}, space :::p, par l:::p {comp edtCollectionItem::::194:x, comp edtValue::::194:x}, space :::p, comp btnSend:::p::p, space :::p, comp btnDuplicate:::p::p}}, space :0:11:x}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, par b {comp lblFilePath::b:p:25:p, comp btnSaveSettings::b:p::p}, space :::p, par b {comp btnLoad::b:p::p, comp edtCollection::b:p::p, comp edtCollectionItem::b:p::p, comp btnSend::b:p::p, comp btnDuplicate::b:p::p}, space :::p, par b {comp edtKey::b:p::p, comp edtValue::b:p::p}, space :::p, comp scrollPane2::::236:x, space :::p}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp lblFilePath:::p:305:p, space :::p, comp btnSaveSettings:::p::p, space ::39:x}, seq {par l:::p {seq l {par l:::p {seq {comp btnLoad:::p::p, space :::p, comp cbxCollection:::::x}, comp edtKey:::p:236:p}, space :::p, par l {comp edtDocument:::p:194:p, comp edtValue::l:p:194:p}}, comp chboxIds::l:p::p, seq l {comp btnSend:::p:89:p, space :::p, comp btnDuplicate:::p::p, space :::p, comp btnRemove:::p:131:p, space :::p, comp btnRemoveField:::p::p}, comp scrollPane2::l:::x}, space :0:6:x}}}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp lblFilePath::b:p:25:p, comp btnSaveSettings::b:p::p}, space :::p, par b {comp btnLoad::b:p::p, comp cbxCollection::b:p::p, comp edtDocument::b:p::p}, space :::p, par b {comp edtKey::b:p::p, comp edtValue::b:p::p}, space :p:3:p, comp chboxIds:::p::p, space :::p, par b {comp btnSend::b:p::p, comp btnDuplicate::b:p::p, comp btnRemove::b:p::p, comp btnRemoveField::b:p::p}, space :::p, comp scrollPane2::::411:x, space :::p}}"
 		} ) {
 			name: "this"
 			"title": "Firebase FireStore"
@@ -14,10 +14,6 @@ new FormModel {
 				name: "lblFilePath"
 				"text": "Choose path to access file"
 				addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "label1MouseClicked", true ) )
-			} )
-			add( new FormComponent( "javax.swing.JTextField" ) {
-				name: "edtCollection"
-				"toolTipText": "Имя коллекции"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnLoad"
@@ -33,7 +29,7 @@ new FormModel {
 				"toolTipText": "Значение"
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
-				name: "edtCollectionItem"
+				name: "edtDocument"
 				"toolTipText": "Элемент коллекции"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
@@ -57,9 +53,26 @@ new FormModel {
 				"text": "Duplicate"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnDuplicateActionPerformed", true ) )
 			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "cbxCollection"
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "chboxIds"
+				"text": "Только id документа"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnRemove"
+				"text": "Remove Document"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnRemoveActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnRemoveField"
+				"text": "Remove field"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnRemoveFieldActionPerformed", true ) )
+			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 640, 380 )
+			"size": new java.awt.Dimension( 450, 615 )
 		} )
 	}
 }

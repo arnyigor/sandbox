@@ -6,4 +6,5 @@ interface FirebaseFormView {
     fun setLoading(loading: Boolean)
     fun showSuccess(message: String)
     fun setPathText(message: String)
+    fun setCollections(list: List<String>)
 }

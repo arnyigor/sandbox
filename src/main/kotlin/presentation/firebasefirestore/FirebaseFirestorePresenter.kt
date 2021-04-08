@@ -6,13 +6,16 @@ import domain.firebase.FirestoreInteractor
 import domain.firebase.FirestoreInteractorImpl
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.jsoup.Jsoup
 import utils.loadAppSettings
 import utils.saveAppSettings
 
+
 class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     @Volatile
-    private var data: List<Map<String, Any>> = emptyList()
+    private var collectionData: List<Map<String, Any>> = emptyList()
+
+    @Volatile
+    private var documentData: Map<String, Any> = emptyMap()
     private var firestoreInteractor: FirestoreInteractor? = null
     private var filepath: String? = null
 
@@ -26,7 +29,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     private fun formatData(map: Map<String, Any>): String? {
-        return Jsoup.parse(GsonBuilder().setPrettyPrinting().create().toJson(map)).text()
+        return GsonBuilder().setPrettyPrinting().create().toJson(map)
     }
 
     private fun loadCollections() {
@@ -37,7 +40,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                 .doOnSubscribe { view?.setLoading(true) }
                 .doFinally { view?.setLoading(false) }
                 .subscribe(
-                    { list -> view?.setData(list.joinToString()) },
+                    { list -> view?.setCollections(list) },
                     { view?.showError(it.message) }
                 )
         } ?: kotlin.run {
@@ -45,15 +48,22 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
         }
     }
 
-    fun loadCollectionData(collectionName: String) {
+    @JvmOverloads
+    fun loadCollectionData(collectionName: String, onlyIds: Boolean = false) {
         if (collectionName.isNotBlank()) {
             firestoreInteractor?.let {
-                Single.fromCallable { it.read(collectionName) }
+                Single.fromCallable { it.readCollection(collectionName) }
                     .map { list ->
-                        this.data = list
+                        this.collectionData = list
                         StringBuilder().apply {
-                            for (map in list) {
-                                append("${formatData(map)}\n")
+                            if (onlyIds) {
+                                list.forEach { map ->
+                                    append("${map["id"]}->${map["host"]}\n")
+                                }
+                            } else {
+                                for (map in list) {
+                                    append("${formatData(map)}\n")
+                                }
                             }
                         }.toString()
                     }
@@ -61,9 +71,10 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                     .observeOn(Schedulers.computation())
                     .doOnSubscribe { view?.setLoading(true) }
                     .doFinally { view?.setLoading(false) }
-                    .subscribe({ view?.setData(it) }, {
-                        view?.showError(it.message)
-                    })
+                    .subscribe(
+                        { view?.setData(it) },
+                        { view?.showError(it.message) }
+                    )
             } ?: kotlin.run {
                 view?.showError("Ошибка инициализации")
             }
@@ -75,43 +86,9 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     fun sendData(
         edtCollectionText: String,
         document: String,
-        map: Map<String, Any>
+        edtKeyText: String,
+        edtValueText: String
     ) {
-        when {
-            edtCollectionText.isBlank() -> {
-                view?.showError("Пустое поле Collection")
-            }
-            document.isBlank() -> {
-                view?.showError("Пустое поле Document")
-            }
-            map.isEmpty() -> {
-                view?.showError("Пустое поле значение")
-            }
-            else -> {
-                firestoreInteractor?.let {
-                    Single.fromCallable { it.setData(edtCollectionText, document, map) }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.computation())
-                        .doOnSubscribe { view?.setLoading(true) }
-                        .doFinally { view?.setLoading(false) }
-                        .subscribe({ success ->
-                            if (success) {
-                                view?.showSuccess("Значения установлены")
-                                loadCollectionData(edtCollectionText)
-                            } else {
-                                view?.showError("Значения не установлены")
-                            }
-                        }, {
-                            view?.showError(it.message)
-                        })
-                } ?: kotlin.run {
-                    view?.showError("Ошибка инициализации")
-                }
-            }
-        }
-    }
-
-    fun sendData(edtCollectionText: String, document: String, edtKeyText: String, edtValueText: String) {
         when {
             edtCollectionText.isBlank() -> {
                 view?.showError("Пустое поле Collection")
@@ -135,7 +112,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                         .subscribe({ success ->
                             if (success) {
                                 view?.showSuccess("Значения установлены")
-                                loadCollectionData(edtCollectionText)
+                                loadDocumentData(edtCollectionText, document)
                             } else {
                                 view?.showError("Значения не установлены")
                             }
@@ -163,7 +140,101 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
         }
     }
 
-    fun duplicateData() {
-        data
+    fun duplicateData(edtCollectionText: String, selected: Boolean) {
+        when {
+            edtCollectionText.isBlank() -> {
+                view?.showError("Пустое поле Collection")
+            }
+            documentData.isEmpty() -> {
+                view?.showError("Нет данных для дублирования")
+            }
+            else -> {
+                val newDocument = documentData.toMutableMap()
+                newDocument.remove("id")
+                firestoreInteractor?.let { interactor ->
+                    Single.fromCallable { interactor.addDocument(edtCollectionText, newDocument) }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.computation())
+                        .doOnSubscribe { view?.setLoading(true) }
+                        .doFinally { view?.setLoading(false) }
+                        .subscribe({ success ->
+                            if (success) {
+                                view?.showSuccess("Документ продублирован")
+                                loadCollectionData(edtCollectionText, selected)
+                            } else {
+                                view?.showError("Документ не продублирован")
+                            }
+                        }, {
+                            view?.showError(it.message)
+                        })
+                } ?: kotlin.run {
+                    view?.showError("Ошибка инициализации")
+                }
+            }
+        }
+    }
+
+    fun loadDocumentData(collection: String, docName: String) {
+        firestoreInteractor?.let {
+            Single.fromCallable { it.readDocument(collection, docName) }
+                .map { map ->
+                    this.documentData = map
+                    formatData(map)
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .doOnSubscribe { view?.setLoading(true) }
+                .doFinally { view?.setLoading(false) }
+                .subscribe(
+                    { view?.setData(it) },
+                    { view?.showError(it.message) }
+                )
+        } ?: kotlin.run {
+            view?.showError("Ошибка инициализации")
+        }
+    }
+
+    fun removeDocument(collection: String, edtDocumentText: String, selected: Boolean) {
+        firestoreInteractor?.let {
+            Single.fromCallable { it.removeDocument(collection, edtDocumentText) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .doOnSubscribe { view?.setLoading(true) }
+                .doFinally { view?.setLoading(false) }
+                .subscribe({ success ->
+                    if (success) {
+                        view?.showSuccess("Документ с id:$edtDocumentText удален")
+                        loadCollectionData(collection, selected)
+                    } else {
+                        view?.showError("Документ с id:$edtDocumentText не удален")
+                    }
+                }, {
+                    view?.showError(it.message)
+                })
+        } ?: kotlin.run {
+            view?.showError("Ошибка инициализации")
+        }
+    }
+
+    fun removeField(collection: String, documentText: String, key: String) {
+        firestoreInteractor?.let {
+            Single.fromCallable { it.deleteField(collection, documentText, key) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .doOnSubscribe { view?.setLoading(true) }
+                .doFinally { view?.setLoading(false) }
+                .subscribe({ success ->
+                    if (success) {
+                        view?.showSuccess("Поле $key удалено")
+                        loadDocumentData(collection, documentText)
+                    } else {
+                        view?.showError("Поле $key не удалено")
+                    }
+                }, {
+                    view?.showError(it.message)
+                })
+        } ?: kotlin.run {
+            view?.showError("Ошибка инициализации")
+        }
     }
 }
