@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import utils.formattedFileSize
 import java.io.File
-import javax.xml.ws.http.HTTPException
 import kotlin.math.roundToInt
-
 
 class ApiHelper {
     private val ktor = HttpClient()
@@ -74,7 +72,7 @@ class ApiHelper {
                 }
             } catch (e: TimeoutCancellationException) {
                 emit(DownloadResult.Error("Connection timed out", e))
-            } catch (t: HTTPException) {
+            } catch (t: org.apache.http.HttpException) {
                 emit(DownloadResult.Error("Failed to connect", Exception(t)))
             } catch (t: Throwable) {
                 emit(DownloadResult.Error("Error", Exception(t)))
