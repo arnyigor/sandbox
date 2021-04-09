@@ -47,7 +47,7 @@ class FirestoreInteractorImpl(
         return try {
             val sendMap = mutableMapOf<String, Any>()
             for ((key, value) in data.entries) {
-                val stringValue = value.toString()
+                val stringValue = value.toString().trim()
                 if (stringValue.startsWith("{") && stringValue.endsWith("}")) {
                     sendMap[key] = Gson().fromJson(stringValue, HashMap::class.java)
                 } else {
@@ -82,11 +82,16 @@ class FirestoreInteractorImpl(
         }
     }
 
-    override fun addDocument(collection: String, data: Map<String, Any>): Boolean {
+    override fun addDocument(collection: String, data: Map<String, Any>, edtDocument: String): Boolean {
         return try {
-            val result = firestoreCredentials.getDatabase()
+            val collectionReference = firestoreCredentials.getDatabase()
                 .collection(collection)
-                .document()
+            val documentReference = if (edtDocument.isNotBlank()) {
+                collectionReference.document(edtDocument)
+            } else {
+                collectionReference.document()
+            }
+            val result = documentReference
                 .set(data, SetOptions.merge())
                 .get()
             println("Update time:${result.updateTime.toDate()}")

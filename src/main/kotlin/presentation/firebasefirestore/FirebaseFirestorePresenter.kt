@@ -55,7 +55,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                 Single.fromCallable { it.readCollection(collectionName) }
                     .map { list ->
                         this.collectionData = list
-                        StringBuilder().apply {
+                        collectionData to StringBuilder().apply {
                             if (onlyIds) {
                                 list.forEach { map ->
                                     append("${map["id"]}->${map["host"]}\n")
@@ -72,7 +72,10 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                     .doOnSubscribe { view?.setLoading(true) }
                     .doFinally { view?.setLoading(false) }
                     .subscribe(
-                        { view?.setData(it) },
+                        { pair ->
+                            view?.setDocs(pair.first.map { map -> map["id"].toString() })
+                            view?.setData(pair.second)
+                        },
                         { view?.showError(it.message) }
                     )
             } ?: kotlin.run {
@@ -140,7 +143,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
         }
     }
 
-    fun duplicateData(edtCollectionText: String, selected: Boolean) {
+    fun duplicateData(edtCollectionText: String, selected: Boolean, edtDocument: String) {
         when {
             edtCollectionText.isBlank() -> {
                 view?.showError("Пустое поле Collection")
@@ -152,7 +155,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                 val newDocument = documentData.toMutableMap()
                 newDocument.remove("id")
                 firestoreInteractor?.let { interactor ->
-                    Single.fromCallable { interactor.addDocument(edtCollectionText, newDocument) }
+                    Single.fromCallable { interactor.addDocument(edtCollectionText, newDocument, edtDocument) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.computation())
                         .doOnSubscribe { view?.setLoading(true) }
@@ -179,14 +182,17 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
             Single.fromCallable { it.readDocument(collection, docName) }
                 .map { map ->
                     this.documentData = map
-                    formatData(map)
+                    documentData.keys.toList().sorted() to formatData(map)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.computation())
                 .doOnSubscribe { view?.setLoading(true) }
                 .doFinally { view?.setLoading(false) }
                 .subscribe(
-                    { view?.setData(it) },
+                    { pair ->
+                        view?.setKeys(pair.first)
+                        view?.setData(pair.second)
+                    },
                     { view?.showError(it.message) }
                 )
         } ?: kotlin.run {
@@ -236,5 +242,9 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
         } ?: kotlin.run {
             view?.showError("Ошибка инициализации")
         }
+    }
+
+    fun onKeyChanged(key: String) {
+        view?.setKeyValue(documentData[key]?.toString())
     }
 }

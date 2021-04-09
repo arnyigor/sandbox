@@ -10,7 +10,6 @@ import presentation.firebasefirestore.FirebaseFirestorePresenter;
 import presentation.firebasefirestore.FirebaseFormView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
@@ -52,18 +51,33 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
 
     @Override
     public void setCollections(@NotNull List<String> list) {
+        cbxCollection.removeAllItems();
         list.forEach(s -> cbxCollection.addItem(s));
+    }
+
+    @Override
+    public void setDocs(@NotNull List<String> docs) {
+        chBoxDoc.removeAllItems();
+        docs.forEach(s -> chBoxDoc.addItem(s));
+    }
+
+    @Override
+    public void setKeys(@NotNull List<String> keys) {
+        chBoxKey.removeAllItems();
+        keys.forEach(s -> chBoxKey.addItem(s));
+    }
+
+    @Override
+    public void setKeyValue(@Nullable String keyValue) {
+        if (keyValue != null) {
+            edtValue.setText(keyValue);
+        }
     }
 
     private void btnLoadActionPerformed(ActionEvent e) {
         Object item = cbxCollection.getSelectedItem();
         if (item != null) {
-            String docName = edtDocument.getText();
-            if (!docName.isEmpty()) {
-                presenter.loadDocumentData(item.toString(), docName);
-            } else {
-                presenter.loadCollectionData(item.toString(), chboxIds.isSelected());
-            }
+            presenter.loadCollectionData(item.toString(), chboxIds.isSelected());
         }
     }
 
@@ -101,6 +115,9 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         btnRemove.setEnabled(!loading);
         btnRemoveField.setEnabled(!loading);
         chboxIds.setEnabled(!loading);
+        chBoxKey.setEnabled(!loading);
+        chBoxDoc.setEnabled(!loading);
+        btnLoadDoc.setEnabled(!loading);
     }
 
     private void btnSendActionPerformed(ActionEvent e) {
@@ -108,11 +125,24 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         if (item != null) {
             String edtKeyText = edtKey.getText();
             String edtValueText = edtValue.getText();
-            int dialogResult = JOptionPane.showConfirmDialog(null, String.format("Отправить данные %s->%s?", edtKeyText, edtValueText));
+            String document = edtDocument.getText();
+            if (edtKeyText.isEmpty()) {
+                Object selectedKey = chBoxKey.getSelectedItem();
+                if (selectedKey != null) {
+                    edtKeyText = selectedKey.toString();
+                }
+            }
+            if (document.isEmpty()) {
+                Object selectedDoc = chBoxDoc.getSelectedItem();
+                if (selectedDoc != null) {
+                    document = selectedDoc.toString();
+                }
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(null, String.format("Отправить данные ключ:%s->значение:%s для документа %s?", edtKeyText, edtValueText, document));
             if (dialogResult == JOptionPane.YES_OPTION) {
                 presenter.sendData(
                         item.toString(),
-                        edtDocument.getText(),
+                        document,
                         edtKeyText,
                         edtValueText
                 );
@@ -127,7 +157,7 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     private void btnDuplicateActionPerformed(ActionEvent e) {
         Object item = cbxCollection.getSelectedItem();
         if (item != null) {
-            presenter.duplicateData(item.toString(), chboxIds.isSelected());
+            presenter.duplicateData(item.toString(), chboxIds.isSelected(), edtDocument.getText());
         }
     }
 
@@ -156,13 +186,28 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         }
     }
 
+    private void btnLoadDocActionPerformed(ActionEvent e) {
+        Object item = cbxCollection.getSelectedItem();
+        if (item != null) {
+            Object selectedDoc = chBoxDoc.getSelectedItem();
+            if (selectedDoc != null) {
+                presenter.loadDocumentData(item.toString(), selectedDoc.toString());
+            }
+        }
+    }
+
+    private void chBoxKeyItemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            Object item = e.getItem();
+            presenter.onKeyChanged(item.toString());
+        }
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         lblFilePath = new JLabel();
         btnLoad = new JButton();
         edtKey = new JTextField();
-        edtValue = new JTextField();
-        edtDocument = new JTextField();
         btnSend = new JButton();
         btnSaveSettings = new JButton();
         scrollPane2 = new JScrollPane();
@@ -172,11 +217,21 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         chboxIds = new JCheckBox();
         btnRemove = new JButton();
         btnRemoveField = new JButton();
+        chBoxKey = new JComboBox();
+        label1 = new JLabel();
+        scrollPane1 = new JScrollPane();
+        edtValue = new JTextPane();
+        label2 = new JLabel();
+        label3 = new JLabel();
+        label4 = new JLabel();
+        chBoxDoc = new JComboBox();
+        edtDocument = new JTextField();
+        btnLoadDoc = new JButton();
 
         //======== this ========
         setTitle("Firebase FireStore");
         setResizable(false);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
         //---- lblFilePath ----
         lblFilePath.setText("Choose path to access file");
@@ -194,18 +249,12 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         //---- edtKey ----
         edtKey.setToolTipText("\u041a\u043b\u044e\u0447");
 
-        //---- edtValue ----
-        edtValue.setToolTipText("\u0417\u043d\u0430\u0447\u0435\u043d\u0438\u0435");
-
-        //---- edtDocument ----
-        edtDocument.setToolTipText("\u042d\u043b\u0435\u043c\u0435\u043d\u0442 \u043a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u0438");
-
         //---- btnSend ----
         btnSend.setText("Send");
         btnSend.addActionListener(e -> btnSendActionPerformed(e));
 
         //---- btnSaveSettings ----
-        btnSaveSettings.setText("Save path");
+        btnSaveSettings.setText("Save");
         btnSaveSettings.addActionListener(e -> btnSaveSettingsActionPerformed(e));
 
         //======== scrollPane2 ========
@@ -228,70 +277,128 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         btnRemoveField.setText("Remove field");
         btnRemoveField.addActionListener(e -> btnRemoveFieldActionPerformed(e));
 
+        //---- chBoxKey ----
+        chBoxKey.addItemListener(e -> chBoxKeyItemStateChanged(e));
+
+        //---- label1 ----
+        label1.setText("Collections:");
+
+        //======== scrollPane1 ========
+        {
+            scrollPane1.setViewportView(edtValue);
+        }
+
+        //---- label2 ----
+        label2.setText("Document");
+
+        //---- label3 ----
+        label3.setText("Key:");
+
+        //---- label4 ----
+        label4.setText("Value:");
+
+        //---- btnLoadDoc ----
+        btnLoadDoc.setText("LoadDoc");
+        btnLoadDoc.addActionListener(e -> btnLoadDocActionPerformed(e));
+
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup()
+                            .addComponent(btnSaveSettings, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblFilePath, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(scrollPane2, GroupLayout.Alignment.LEADING)
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addGroup(contentPaneLayout.createParallelGroup()
                                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                                .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnSaveSettings)
-                                                .addContainerGap(39, Short.MAX_VALUE))
-                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                            .addGroup(contentPaneLayout.createParallelGroup()
+                                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                                    .addGap(0, 0, Short.MAX_VALUE)
+                                                    .addComponent(chboxIds)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                    .addComponent(edtDocument, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                                .addComponent(btnLoad)
-                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                .addComponent(cbxCollection))
-                                                                        .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE))
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                                        .addComponent(edtDocument, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(edtValue, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)))
-                                                        .addComponent(chboxIds)
-                                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                .addComponent(btnSend, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(btnDuplicate)
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(btnRemove, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(btnRemoveField))
-                                                        .addComponent(scrollPane2))
-                                                .addGap(0, 6, Short.MAX_VALUE))))
+                                                    .addGroup(contentPaneLayout.createSequentialGroup()
+                                                        .addComponent(btnLoad)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(label1)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(cbxCollection, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(contentPaneLayout.createSequentialGroup()
+                                                        .addComponent(btnLoadDoc)
+                                                        .addGap(44, 44, 44)
+                                                        .addComponent(label2)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(chBoxDoc))))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(label3)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(chBoxKey, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
+                                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                                    .addGap(6, 6, 6)
+                                                    .addComponent(edtKey)))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(label4))
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                            .addComponent(btnSend, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(btnDuplicate)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(btnRemove, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(btnRemoveField)))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 303, GroupLayout.PREFERRED_SIZE)))
+                            .addGap(229, 229, 229))))
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSaveSettings)
+                        .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblFilePath, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnSaveSettings))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btnLoad)
-                                        .addComponent(cbxCollection, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(edtDocument, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(edtValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addGap(3, 3, 3)
-                                .addComponent(chboxIds)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btnSend)
-                                        .addComponent(btnDuplicate)
-                                        .addComponent(btnRemove)
-                                        .addComponent(btnRemoveField))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                                .addContainerGap())
+                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnLoad)
+                                .addComponent(label1)
+                                .addComponent(cbxCollection, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(label3)
+                                .addComponent(chBoxKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(label4))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPaneLayout.createParallelGroup()
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label2)
+                                        .addComponent(chBoxDoc, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnLoadDoc))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(chboxIds)
+                                        .addComponent(edtDocument, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(edtKey, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnSend)
+                                .addComponent(btnDuplicate)
+                                .addComponent(btnRemove)
+                                .addComponent(btnRemoveField)))
+                        .addComponent(scrollPane1))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 365, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(3, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -302,8 +409,6 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     private JLabel lblFilePath;
     private JButton btnLoad;
     private JTextField edtKey;
-    private JTextField edtValue;
-    private JTextField edtDocument;
     private JButton btnSend;
     private JButton btnSaveSettings;
     private JScrollPane scrollPane2;
@@ -313,5 +418,15 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
     private JCheckBox chboxIds;
     private JButton btnRemove;
     private JButton btnRemoveField;
+    private JComboBox chBoxKey;
+    private JLabel label1;
+    private JScrollPane scrollPane1;
+    private JTextPane edtValue;
+    private JLabel label2;
+    private JLabel label3;
+    private JLabel label4;
+    private JComboBox chBoxDoc;
+    private JTextField edtDocument;
+    private JButton btnLoadDoc;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
