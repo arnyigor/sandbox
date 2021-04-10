@@ -130,11 +130,15 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     fun savePathSettings() {
-        saveAppSettings(
-            properties = listOf(
-                "filepath" to filepath
+        if(filepath.isNullOrBlank()){
+            view?.showError("Пустой путь")
+        }else{
+            saveAppSettings(
+                properties = listOf(
+                    "filepath" to filepath
+                )
             )
-        )
+        }
     }
 
     fun loadSettings() {
