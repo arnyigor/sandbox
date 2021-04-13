@@ -2,11 +2,11 @@ package ui.mainform;
 
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 /*
  * Created by JFormDesigner on Fri Nov 29 22:20:46 MSK 2019
@@ -24,49 +24,60 @@ public class MainForm extends JFrame implements MainFormView {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         pack();
         setVisible(true);
+        mainPresenter.loadData();
     }
 
-    private void button2ActionPerformed(ActionEvent e) {
+    private void choosePathActionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnVal = chooser.showOpenDialog(getContentPane());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
-            mainPresenter.savePath(absolutePath,
-                    textField2.getText(),
-                    textField1.getText(),
-                    textField3.getText(),
-                    textField4.getText());
+            mainPresenter.savePath(
+                    absolutePath,
+                    txtCookie.getText(),
+                    txtPath.getText(),
+                    txtFrom.getText(),
+                    txtTo.getText());
             label1.setText(absolutePath);
         }
     }
 
     @Override
     public void setUIEnabled(boolean enabled) {
-        button1.setEnabled(enabled);
-        button2.setEnabled(enabled);
-        button3.setEnabled(enabled);
+        btnDownload.setEnabled(enabled);
+        btnChoosePath.setEnabled(enabled);
+        btnFFmpegPath.setEnabled(enabled);
     }
 
-    private void button3ActionPerformed(ActionEvent e) {
+    private void btnFfmPegActionPerformed(ActionEvent e) {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnVal = chooser.showOpenDialog(getContentPane());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String absolutePath = chooser.getSelectedFile().getAbsolutePath();
             mainPresenter.setFfmpegPath(absolutePath);
+            mainPresenter.setFfmpegForWin(chbxWin.isSelected());
         }
     }
 
-    private void button1ActionPerformed(ActionEvent e) {
-        mainPresenter.processFiles(textField5.getText(), integer -> {
+    private void btnDownloadActionListener(ActionEvent e) {
+        mainPresenter.processFiles(txtFileName.getText(), integer -> {
             progressBar1.setValue(integer);
             return Unit.INSTANCE;
         }, (result) -> {
             JOptionPane.showMessageDialog(this, result);
             label1.setText("Files download success");
             return Unit.INSTANCE;
+        }, s -> {
+            JOptionPane.showMessageDialog(this, s, "Ошибка!", JOptionPane.ERROR_MESSAGE);
+            label1.setText("Files download success");
+            return Unit.INSTANCE;
         });
+    }
+
+    private void btnSaveActionPerformed(ActionEvent e) {
+        mainPresenter.saveData();
     }
 
     @Override
@@ -74,35 +85,50 @@ public class MainForm extends JFrame implements MainFormView {
 
     }
 
+    @Override
+    public void setData(@Nullable String absolutePath,
+                        @Nullable String cookie,
+                        @NotNull String start,
+                        @NotNull String end,
+                        @Nullable String url) {
+        txtCookie.setText(cookie);
+        txtFrom.setText(start);
+        txtTo.setText(end);
+        txtPath.setText(url);
+        txtFileName.setText(absolutePath);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        button1 = new JButton();
-        textField1 = new JTextField();
-        button2 = new JButton();
+        btnDownload = new JButton();
+        txtPath = new JTextField();
+        btnChoosePath = new JButton();
         progressBar1 = new JProgressBar();
         label1 = new JLabel();
         label2 = new JLabel();
         label3 = new JLabel();
-        textField2 = new JTextField();
+        txtCookie = new JTextField();
         label4 = new JLabel();
-        textField3 = new JTextField();
-        textField4 = new JTextField();
+        txtFrom = new JTextField();
+        txtTo = new JTextField();
         label5 = new JLabel();
-        button3 = new JButton();
-        textField5 = new JTextField();
+        btnFFmpegPath = new JButton();
+        txtFileName = new JTextField();
         label6 = new JLabel();
+        chbxWin = new JCheckBox();
+        btnSave = new JButton();
 
         //======== this ========
         setResizable(false);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
-        //---- button1 ----
-        button1.setText("Download");
-        button1.addActionListener(e -> button1ActionPerformed(e));
+        //---- btnDownload ----
+        btnDownload.setText("Download");
+        btnDownload.addActionListener(e -> btnDownloadActionListener(e));
 
-        //---- button2 ----
-        button2.setText("ChoosePath");
-        button2.addActionListener(e -> button2ActionPerformed(e));
+        //---- btnChoosePath ----
+        btnChoosePath.setText("ChoosePath");
+        btnChoosePath.addActionListener(e -> choosePathActionPerformed(e));
 
         //---- label1 ----
         label1.setText("text");
@@ -117,95 +143,103 @@ public class MainForm extends JFrame implements MainFormView {
         label4.setText("From");
 
         //---- label5 ----
-        label5.setText("to");
+        label5.setText("To");
 
-        //---- button3 ----
-        button3.setText("ffmpegPath");
-        button3.addActionListener(e -> button3ActionPerformed(e));
+        //---- btnFFmpegPath ----
+        btnFFmpegPath.setText("ffmpegPath");
+        btnFFmpegPath.addActionListener(e -> btnFfmPegActionPerformed(e));
 
         //---- label6 ----
         label6.setText("FileName");
 
+        //---- chbxWin ----
+        chbxWin.setText("Windows");
+
+        //---- btnSave ----
+        btnSave.setText("Save");
+        btnSave.addActionListener(e -> btnSaveActionPerformed(e));
+
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addGap(18, 18, 18)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(progressBar1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                contentPaneLayout.createParallelGroup()
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGroup(contentPaneLayout.createParallelGroup()
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addComponent(label6, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(textField5, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(button1))
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addGroup(contentPaneLayout.createSequentialGroup()
-                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(contentPaneLayout.createSequentialGroup()
-                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textField1, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(contentPaneLayout.createSequentialGroup()
-                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(contentPaneLayout.createParallelGroup()
-                                            .addGroup(contentPaneLayout.createSequentialGroup()
-                                                .addComponent(textField3, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(label5, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(button3, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(6, 6, 6)
-                                        .addGroup(contentPaneLayout.createParallelGroup()
-                                            .addComponent(button2, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(textField4, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(70, 70, 70))))
-                            .addGap(0, 43, Short.MAX_VALUE)))
-                    .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                .addComponent(label6, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(btnDownload)))
+                                                .addGap(0, 16, Short.MAX_VALUE))
+                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                        .addComponent(progressBar1, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                                                        .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                                                        .addGroup(contentPaneLayout.createSequentialGroup()
+                                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(label5, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(txtFrom, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                                                                        .addComponent(txtTo, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                                        .addComponent(btnFFmpegPath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(btnChoosePath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(34, 34, 34)
+                                                                .addGroup(contentPaneLayout.createParallelGroup()
+                                                                        .addComponent(btnSave)
+                                                                        .addComponent(chbxWin))
+                                                                .addGap(0, 36, Short.MAX_VALUE)))
+                                                .addContainerGap())))
         );
         contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addGap(22, 22, 22)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(label3))
-                    .addGap(18, 18, 18)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(label2))
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGap(25, 25, 25)
-                            .addComponent(label4))
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPaneLayout.createParallelGroup()
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addGap(7, 7, 7)
-                                    .addComponent(label5))
-                                .addComponent(textField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(textField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(button2)
-                        .addComponent(button3))
-                    .addGap(18, 18, 18)
-                    .addComponent(label1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                    .addGap(12, 12, 12)
-                    .addComponent(progressBar1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-                    .addGap(18, 18, 18)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label6)
-                        .addComponent(textField5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(button1))
-                    .addContainerGap(43, Short.MAX_VALUE))
+                contentPaneLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label3))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label2))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label4)
+                                        .addComponent(txtFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnFFmpegPath)
+                                        .addComponent(chbxWin))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label5)
+                                        .addComponent(btnChoosePath)
+                                        .addComponent(btnSave))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(label1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(progressBar1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label6)
+                                        .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnDownload))
+                                .addContainerGap(22, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(null);
@@ -213,20 +247,22 @@ public class MainForm extends JFrame implements MainFormView {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JButton button1;
-    private JTextField textField1;
-    private JButton button2;
+    private JButton btnDownload;
+    private JTextField txtPath;
+    private JButton btnChoosePath;
     private JProgressBar progressBar1;
     private JLabel label1;
     private JLabel label2;
     private JLabel label3;
-    private JTextField textField2;
+    private JTextField txtCookie;
     private JLabel label4;
-    private JTextField textField3;
-    private JTextField textField4;
+    private JTextField txtFrom;
+    private JTextField txtTo;
     private JLabel label5;
-    private JButton button3;
-    private JTextField textField5;
+    private JButton btnFFmpegPath;
+    private JTextField txtFileName;
     private JLabel label6;
+    private JCheckBox chbxWin;
+    private JButton btnSave;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

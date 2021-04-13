@@ -1,16 +1,16 @@
 package domain.main
 
+import delegation.KotlinDelegateTest
 import interfaces.Testable
 import rx.CompletableTests
 import utils.JavaRunnerTestable
-import utils.ParsingUtils
 import utils.dump
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 class KotlinRunnerTestable : Testable {
     override fun runTest(args: Array<String>?) {
-        ParsingUtils().readFile()
+        KotlinDelegateTest().testCode()
     }
 
     private fun isRateZero(stringRate: String) =

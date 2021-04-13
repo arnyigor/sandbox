@@ -10,9 +10,12 @@ import java.io.File
 
 class VideoEncoding(
     ffmpegPath: String,
+    private val ffmpegForWin: Boolean = true,
 ) : IVideoEncoding {
-    private val ffmpeg: FFmpeg = FFmpeg(ffmpegPath + File.separator + "ffmpeg.exe")
-    private val ffprobe: FFprobe = FFprobe(ffmpegPath + File.separator + "ffprobe.exe")
+    private val extent
+        get() = if (ffmpegForWin) ".exe" else ""
+    private val ffmpeg: FFmpeg = FFmpeg(ffmpegPath + File.separator + "ffmpeg$extent")
+    private val ffprobe: FFprobe = FFprobe(ffmpegPath + File.separator + "ffprobe$extent")
 
     override fun mergeFiles(pathToListOfFiles: String, fileName: String): File {
         val substringBeforeLast = pathToListOfFiles.substringBeforeLast(File.separator)

@@ -9,7 +9,6 @@ import videoencoding.IVideoEncoding
 import videoencoding.VideoEncoding
 import kotlin.properties.Delegates
 
-
 class VideoEncodingPresenter(private val view: VideoEncodingView) {
     private var job: Job? = null
     private var loadingMode by Delegates.observable(false) { _, _, loading ->

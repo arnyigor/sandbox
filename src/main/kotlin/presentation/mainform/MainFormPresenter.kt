@@ -17,10 +17,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.apache.commons.io.FileUtils
-import utils.formattedFileSize
-import utils.getPercent
-import utils.isFileExist
-import utils.launchAsync
+import utils.*
 import videoencoding.VideoEncoding
 import xls.CsvFileReader
 import xls.MyFileReader
@@ -32,6 +29,7 @@ import kotlin.properties.Delegates
 
 
 class MainFormPresenter(private val mainView: MainFormView) {
+    var ffmpegForWin: Boolean = true
     private var listFile: File? = null
     private var absolutePath: String? = null
     private var cookie: String? = null
@@ -86,7 +84,6 @@ class MainFormPresenter(private val mainView: MainFormView) {
                 it.printStackTrace()
             })
     }
-
 
     private suspend fun download(absolutePath: String, onProgress: (progress: Int) -> Unit) {
         val url = tsUrlWithoutEndIterate
@@ -148,7 +145,8 @@ class MainFormPresenter(private val mainView: MainFormView) {
     fun processFiles(
         fileName: String,
         onProgress: (progress: Int) -> Unit,
-        onSuccess: (res: String) -> Unit
+        onSuccess: (res: String) -> Unit,
+        onError: (res: String?) -> Unit
     ) {
         loadingMode = true
         absolutePath?.let { path ->
@@ -166,19 +164,20 @@ class MainFormPresenter(private val mainView: MainFormView) {
                 loadingMode = false
                 println("download files error")
                 it.printStackTrace()
+                onError(it.message)
             })
         }
     }
 
     private fun getFileData(resultFileName: String): String {
         return ffmpegPath?.let { path ->
-            VideoEncoding(path).getMediaData(resultFileName)
+            VideoEncoding(path, ffmpegForWin).getMediaData(resultFileName)
         } ?: throw Exception("ffmpegPath is null")
     }
 
     private fun mergeFiles(resultFileName: String): File {
         return ffmpegPath?.let { path ->
-            val mergeFiles = VideoEncoding(path).mergeFiles(
+            val mergeFiles = VideoEncoding(path, ffmpegForWin).mergeFiles(
                 listFile?.absolutePath!!,
                 resultFileName.takeIf { it.isNotBlank() } ?: "result"
             )
@@ -242,5 +241,27 @@ class MainFormPresenter(private val mainView: MainFormView) {
             .map { it.replace("NBSP".toRegex(), "") }
             .toList()
         split
+    }
+
+    fun saveData() {
+        saveAppSettings(
+            listOf(
+                "absolutePath" to absolutePath,
+                "cookie" to cookie,
+                "start" to start.toString(),
+                "end" to end.toString(),
+                "url" to tsUrlWithoutEndIterate
+            )
+        )
+    }
+
+    fun loadData() {
+        val settings = loadAppSettings(propertiesKeys = arrayOf("absolutePath", "cookie", "start", "end", "url"))
+        absolutePath = settings["absolutePath"]
+        cookie = settings["cookie"]
+        start = settings["start"]?.toIntOrNull() ?: 0
+        end = settings["end"]?.toIntOrNull() ?: 0
+        tsUrlWithoutEndIterate = settings["url"]
+        mainView.setData(absolutePath, cookie, start.toString(), end.toString(), tsUrlWithoutEndIterate)
     }
 }

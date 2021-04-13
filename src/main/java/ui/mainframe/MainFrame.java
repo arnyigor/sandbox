@@ -1,6 +1,7 @@
 package ui.mainframe;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
 
@@ -47,6 +48,11 @@ public class MainFrame extends JDialog implements MainFormView {
         });
         pack();
         setVisible(true);
+    }
+
+    @Override
+    public void setData(@Nullable String absolutePath, @Nullable String cookie, @NotNull String start, @NotNull String end, @Nullable String url) {
+
     }
 
     @Override
