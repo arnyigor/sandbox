@@ -1,13 +1,25 @@
 package ui.mainform;
 
-import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+
+import kotlin.Unit;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 /*
  * Created by JFormDesigner on Fri Nov 29 22:20:46 MSK 2019
  */
@@ -120,7 +132,7 @@ public class MainForm extends JFrame implements MainFormView {
 
         //======== this ========
         setResizable(false);
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
 
         //---- btnDownload ----
         btnDownload.setText("Download");

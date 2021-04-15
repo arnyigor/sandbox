@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 import kotlin.properties.Delegates
 
-
 class MainFormPresenter(private val mainView: MainFormView) {
     var ffmpegForWin: Boolean = true
     private var listFile: File? = null
@@ -144,9 +143,9 @@ class MainFormPresenter(private val mainView: MainFormView) {
 
     fun processFiles(
         fileName: String,
-        onProgress: (progress: Int) -> Unit,
-        onSuccess: (res: String) -> Unit,
-        onError: (res: String?) -> Unit
+        onProgress: (progress: Int) -> Unit = {},
+        onSuccess: (res: String) -> Unit = {},
+        onError: (res: String?) -> Unit = {}
     ) {
         loadingMode = true
         absolutePath?.let { path ->
