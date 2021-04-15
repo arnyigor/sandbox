@@ -89,7 +89,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
         val cookieData = cookie
         if (cookieData != null && url != null && start != 0 && end != 0 && end > start) {
             val headers = listOf(Pair("cookie", cookieData))
-            val writefileName = url.substringAfterLast("/")
+            val writeFileName = url.substringAfterLast("/")
             (start..end).asFlow()
                 .onEach {
                     onProgress(getPercent(it, end, start).toInt())
@@ -101,7 +101,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
                         headers = headers,
                         parentPath = absolutePath,
                         tsUrlWithoutEndIterate = url,
-                        writefileName = writefileName
+                        writefileName = writeFileName
                     )
                 }
                 .flowOn(Dispatchers.IO)
@@ -114,7 +114,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
 //                                println("Result:${it.message}")
                         }
                         is DownloadResult.Error -> {
-                            println("Error message:${it.message},cause:${it.cause?.stackTrace}")
+                            println("Error message:${it.message},cause:${it.cause?.stackTraceToString()}")
                         }
                     }
                 }
@@ -129,7 +129,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
         writefileName: String
     ): Flow<DownloadResult> {
         val formattedIndex = DecimalFormat("00000").format(index)
-        val fileName = "$formattedIndex.ts"
+        val fileName = "_$formattedIndex.ts"
         val url = "$tsUrlWithoutEndIterate$fileName"
         val file = File("$parentPath/$writefileName$fileName")
         return if (file.isFileExist()) {

@@ -24,7 +24,10 @@ fun saveAppSettings(
     }
 }
 
-fun loadAppSettings(pathName: String = "config.properties", vararg propertiesKeys: String?): Map<String, String> {
+fun loadAppSettings(
+    pathName: String = "config.properties",
+    vararg propertiesKeys: String?
+): Map<String, String> {
     val configFile = File(System.getProperty("user.dir"), pathName)
     val result = mutableMapOf<String, String>()
     try {
@@ -33,7 +36,9 @@ fun loadAppSettings(pathName: String = "config.properties", vararg propertiesKey
         props.load(reader)
         propertiesKeys.forEach { key ->
             key?.let {
-                result[key] = props.getProperty(key)
+                props.getProperty(key)?.let { property ->
+                    result[key] = property
+                }
             }
         }
         reader.close()
