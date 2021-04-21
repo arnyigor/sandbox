@@ -9,7 +9,6 @@ import io.reactivex.schedulers.Schedulers
 import utils.loadAppSettings
 import utils.saveAppSettings
 
-
 class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     @Volatile
     private var collectionData: List<Map<String, Any>> = emptyList()

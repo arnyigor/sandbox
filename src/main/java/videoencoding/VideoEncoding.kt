@@ -7,7 +7,6 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder
 import net.bramp.ffmpeg.builder.FFmpegBuilder.Verbosity
 import java.io.File
 
-
 class VideoEncoding(
     ffmpegPath: String,
     private val ffmpegForWin: Boolean = true,

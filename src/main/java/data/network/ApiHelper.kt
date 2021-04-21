@@ -26,14 +26,6 @@ class ApiHelper {
     ): Flow<DownloadResult> {
         return flow {
             try {
-                /* val httpRequest = HttpRequestBuilder().apply {
-                     url(url)
-                     headers {
-                         for (pair in headersList) {
-                             append(pair.first, pair.second)
-                         }
-                     }
-                 }*/
                 val response = this@downloadFile.request<HttpResponse> {
                     url(url)
                     method = HttpMethod.Get

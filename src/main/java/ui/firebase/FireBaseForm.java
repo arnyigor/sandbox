@@ -6,31 +6,12 @@ package ui.firebase;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.LayoutStyle;
-
 import presentation.firebasefirestore.FirebaseFirestorePresenter;
 import presentation.firebasefirestore.FirebaseFormView;
+
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.List;
 
 public class FireBaseForm extends JFrame implements FirebaseFormView {
     private final FirebaseFirestorePresenter presenter;
@@ -250,7 +231,7 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         //======== this ========
         setTitle("Firebase FireStore");
         setResizable(false);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
         //---- lblFilePath ----
         lblFilePath.setText("Choose path to access file");

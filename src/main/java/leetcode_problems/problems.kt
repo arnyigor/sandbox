@@ -1,17 +1,108 @@
 package leetcode_problems
 
+sealed class PROBLEM {
+    data class CountChars(val type: Int) : PROBLEM()
+    object MergeSortedArray : PROBLEM()
+}
+
+fun run(problem: PROBLEM) {
+    when (problem) {
+        is PROBLEM.CountChars -> {
+            when (problem.type) {
+                0-> {
+                    for (i in 1..20) {
+                        val generateNums = generateNums(10000)
+                        countTime { countChars(generateNums) }
+                    }
+                }
+                else -> {
+                    for (i in 1..20) {
+                        val generateNums = generateNums(10000)
+                        countTime { countCharsMap(generateNums) }
+                    }
+                }
+            }
+        }
+        is PROBLEM.MergeSortedArray -> {
+            val a = intArrayOf(4, 6, 8, 9, 10)
+            val b = intArrayOf(3, 4, 5, 6, 7, 8, 9)
+            println(mergeToSortedArray(a, b).joinToString())
+        }
+    }
+}
+
 fun main() {
-    println(
-        mergeTwoLists(
-            ListNode(2, ListNode(3, ListNode(1))),
-            ListNode(3, ListNode(4, ListNode(2)))
-        )
-    )
+    run(PROBLEM.CountChars(0))
+}
+
+fun mergeToSortedArray(a: IntArray, b: IntArray): IntArray {
+    val n = a.size
+    val m = b.size
+    val c = IntArray(n + m)
+    var i = 0
+    var j = 0
+    var k = 0
+    while (i < n && j < m) {
+        if (a[i] < b[j]) {
+            c[k++] = a[i++]
+        } else {
+            c[k++] = b[j++]
+        }
+    }
+    while (i < n) {
+        c[k++] = a[i++];
+    }
+    while (j < m) {
+        c[k++] = b[j++];
+    }
+    return c
+}
+
+fun generateNums(count: Int): String {
+    return StringBuilder().apply {
+        var iter = 1
+        for (i in 1..count) {
+            if (iter == 10) {
+                iter = 1
+            }
+            append(iter)
+            iter++
+        }
+    }.toString()
+}
+
+fun <T> countTime(block: () -> T): T {
+    val timeStart = System.nanoTime()
+    val invoke = block.invoke()
+    val diff = (System.nanoTime() - timeStart) / 1000
+    println("Block time:$diff mcs")
+    return invoke
+}
+
+fun countChars(text: String): HashMap<Char, Int> {
+    val map = hashMapOf<Char, Int>()
+    for (c in text) {
+        map[c] = text.count { it == c }
+    }
+    return map
+}
+
+fun countCharsMap(text: String): HashMap<Char, Int> {
+    val map = hashMapOf<Char, Int>()
+    for (c in text) {
+        val i = map[c]
+        if (i == null) {
+            map[c] = 1
+        } else {
+            map[c] = i + 1
+        }
+    }
+    return map
 }
 
 data class ListNode(var `val`: Int, var next: ListNode? = null)
 
-fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? {
+fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? { // TODO не доработан
     var head: ListNode? = l1
     var cur: ListNode? = null
     while (head != null) {

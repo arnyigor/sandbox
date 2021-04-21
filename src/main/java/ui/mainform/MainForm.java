@@ -1,25 +1,13 @@
 package ui.mainform;
 
+import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.Container;
-import java.awt.event.ActionEvent;
-
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-
-import kotlin.Unit;
 import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 /*
  * Created by JFormDesigner on Fri Nov 29 22:20:46 MSK 2019
  */
@@ -132,7 +120,7 @@ public class MainForm extends JFrame implements MainFormView {
 
         //======== this ========
         setResizable(false);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
         //---- btnDownload ----
         btnDownload.setText("Download");
@@ -174,84 +162,84 @@ public class MainForm extends JFrame implements MainFormView {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup()
-                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
-                                                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE)))
-                                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                .addComponent(label6, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(btnDownload)))
-                                                .addGap(0, 16, Short.MAX_VALUE))
-                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                        .addComponent(progressBar1, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
-                                                        .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
-                                                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(label5, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                                        .addComponent(txtFrom, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                                                                        .addComponent(txtTo, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
-                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                                        .addComponent(btnFFmpegPath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(btnChoosePath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(34, 34, 34)
-                                                                .addGroup(contentPaneLayout.createParallelGroup()
-                                                                        .addComponent(btnSave)
-                                                                        .addComponent(chbxWin))
-                                                                .addGap(0, 36, Short.MAX_VALUE)))
-                                                .addContainerGap())))
+                            .addGroup(contentPaneLayout.createParallelGroup()
+                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addGroup(contentPaneLayout.createSequentialGroup()
+                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(contentPaneLayout.createSequentialGroup()
+                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addComponent(label6, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnDownload)))
+                            .addGap(0, 16, Short.MAX_VALUE))
+                        .addGroup(contentPaneLayout.createSequentialGroup()
+                            .addGroup(contentPaneLayout.createParallelGroup()
+                                .addComponent(progressBar1, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                                .addComponent(label1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label5, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtFrom, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                                        .addComponent(txtTo, GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(btnFFmpegPath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnChoosePath, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(34, 34, 34)
+                                    .addGroup(contentPaneLayout.createParallelGroup()
+                                        .addComponent(btnSave)
+                                        .addComponent(chbxWin))
+                                    .addGap(0, 36, Short.MAX_VALUE)))
+                            .addContainerGap())))
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label3))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label2))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(label4)
-                                        .addComponent(txtFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnFFmpegPath)
-                                        .addComponent(chbxWin))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(txtTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label5)
-                                        .addComponent(btnChoosePath)
-                                        .addComponent(btnSave))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(label1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(progressBar1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(label6)
-                                        .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnDownload))
-                                .addContainerGap(22, Short.MAX_VALUE))
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(label3))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtCookie, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(label2))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(label4)
+                        .addComponent(txtFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnFFmpegPath)
+                        .addComponent(chbxWin))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(label5)
+                        .addComponent(btnChoosePath)
+                        .addComponent(btnSave))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(label1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(progressBar1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(label6)
+                        .addComponent(txtFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDownload))
+                    .addContainerGap(22, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(null);
