@@ -48,7 +48,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     }
 
     fun onOkClicked() {
-        interactor.runTest(TestType.KOTLIN)
+        interactor.runTest(TestType.RX)
     }
 
     fun convertFileToString(absolutePath: String) {
