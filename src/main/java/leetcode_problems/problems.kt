@@ -3,13 +3,17 @@ package leetcode_problems
 sealed class PROBLEM {
     data class CountChars(val type: Int) : PROBLEM()
     object MergeSortedArray : PROBLEM()
+    object MergeTwoLists : PROBLEM()
+    object RemoveDuplicates : PROBLEM()
+    object StrStr : PROBLEM()
+    object NONE : PROBLEM()
 }
 
 fun run(problem: PROBLEM) {
     when (problem) {
         is PROBLEM.CountChars -> {
             when (problem.type) {
-                0-> {
+                0 -> {
                     for (i in 1..20) {
                         val generateNums = generateNums(10000)
                         countTime { countChars(generateNums) }
@@ -28,11 +32,73 @@ fun run(problem: PROBLEM) {
             val b = intArrayOf(3, 4, 5, 6, 7, 8, 9)
             println(mergeToSortedArray(a, b).joinToString())
         }
+        PROBLEM.NONE -> {
+            val phone = "8 999 999 99 99"
+            println(phone.replace(" ", ""))
+        }
+        PROBLEM.MergeTwoLists -> {
+            val ln4 = ListNode(3)
+            val ln2 = ListNode(2).apply { next = ln4 }
+            val ln1 = ListNode(1).apply { next = ln2 }
+
+            val ln44 = ListNode(7)
+            val ln3 = ListNode(5).apply { next = ln44 }
+            val ln11 = ListNode(3).apply { next = ln3 }
+
+            println("ln1:$ln1")
+            println("ln11:$ln11")
+
+            println(mergeTwoLists(ln1, ln11))
+        }
+        PROBLEM.RemoveDuplicates -> {
+            val nums = intArrayOf(1, 1, 2)
+            println(nums.joinToString())
+            println(removeDuplicates(nums))
+            println(nums.joinToString())
+        }
+        PROBLEM.StrStr -> {
+            //Input: haystack = "hello", needle = "ll"
+            //Output: 2
+            //Input: haystack = "aaaaa", needle = "bba"
+            //Output: -1
+            //Input: haystack = "", needle = ""
+            //Output: 0
+            println(strStr("hello", "ll"))
+            println(strStr("aaaaa", "bba"))
+            println(strStr("", "a"))
+        }
     }
 }
 
 fun main() {
-    run(PROBLEM.CountChars(0))
+    run(PROBLEM.StrStr)
+}
+
+fun strStr(haystack: String, needle: String): Int {
+    if (needle.isEmpty()) return 0
+    return haystack.indexOf(needle)
+}
+
+fun removeDuplicates(nums: IntArray): Int {
+    var j = 0
+    for (i in nums.indices) {
+        if (nums[i] != nums[j]) {
+            nums[++j] = nums[i]
+        }
+    }
+    return ++j
+}
+
+fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? {
+    if (l1 == null) return l2
+    if (l2 == null) return l1
+    return if (l1.`val` < l2.`val`) {
+        l1.next = mergeTwoLists(l1.next, l2)
+        l1
+    } else {
+        l2.next = mergeTwoLists(l1, l2.next)
+        l2
+    }
 }
 
 fun mergeToSortedArray(a: IntArray, b: IntArray): IntArray {
@@ -100,24 +166,10 @@ fun countCharsMap(text: String): HashMap<Char, Int> {
     return map
 }
 
-data class ListNode(var `val`: Int, var next: ListNode? = null)
-
-fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? { // TODO не доработан
-    var head: ListNode? = l1
-    var cur: ListNode? = null
-    while (head != null) {
-        val num = head.`val`
-        if (cur == null) {
-            cur = ListNode(num, head)
-        } else {
-            val i = cur.`val`
-            if (i < num) {
-                cur = head
-            }
-        }
-        head = head.next
+data class ListNode(var `val`: Int, var next: ListNode? = null) {
+    override fun toString(): String {
+        return "$`val`->$next"
     }
-    return null
 }
 
 fun arraydiff(arr1: IntArray, arr2: IntArray): Int {

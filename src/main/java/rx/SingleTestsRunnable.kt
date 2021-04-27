@@ -15,8 +15,15 @@ import java.io.File
 class SingleTestsRunnable : Testable {
     private val activeClientObservable = BehaviorSubject.create<Any>()
     override fun runTest(args: Array<String>?) {
-        mergeTest()
-        zipTest()
+        errorTest()
+    }
+
+    fun getDebitAccount(accountNumber: String, list: List<Account>): Single<Account> {
+        return Observable.fromIterable(list)
+            .filter { account: Account -> account.number == accountNumber }
+            .firstElement()
+            .switchIfEmpty(Single.error(Throwable("error no account found")))
+            .subscribeOn(Schedulers.io())
     }
 
     private fun longTimeEventWithMaybeError(task: String, time: Long, error: String? = null): String {
@@ -30,6 +37,17 @@ class SingleTestsRunnable : Testable {
 
     private fun mergeTest() {
         Single.merge(firstSingle(), secondSingle(), errorSingle("error from merge"))
+            .observeOn(Schedulers.computation())
+            .subscribe({ result ->
+                println("mergeTest result ${printThread()}->:$result complete")
+            }, {
+                it.printStackTrace()
+                println("mergeTest error:${it.message}")
+            })
+    }
+
+    private fun errorTest() {
+        getDebitAccount("0", listOf(Account("1"), Account("2")))
             .observeOn(Schedulers.computation())
             .subscribe({ result ->
                 println("mergeTest result ${printThread()}->:$result complete")
