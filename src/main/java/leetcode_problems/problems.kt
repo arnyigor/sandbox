@@ -6,6 +6,9 @@ sealed class PROBLEM {
     object MergeTwoLists : PROBLEM()
     object RemoveDuplicates : PROBLEM()
     object StrStr : PROBLEM()
+    object SearchInsert : PROBLEM()
+    object LengthOfLastWord : PROBLEM()
+    object PlusOne : PROBLEM()
     object NONE : PROBLEM()
 }
 
@@ -33,8 +36,7 @@ fun run(problem: PROBLEM) {
             println(mergeToSortedArray(a, b).joinToString())
         }
         PROBLEM.NONE -> {
-            val phone = "8 999 999 99 99"
-            println(phone.replace(" ", ""))
+            println(countChar1("ssss",'d'))
         }
         PROBLEM.MergeTwoLists -> {
             val ln4 = ListNode(3)
@@ -67,11 +69,70 @@ fun run(problem: PROBLEM) {
             println(strStr("aaaaa", "bba"))
             println(strStr("", "a"))
         }
+        PROBLEM.SearchInsert -> {
+            // [1,3,5,6], target = 5 -> 2
+            // [1,3,5,6], target = 2 -> 1
+            // [1,3,5,6], target = 7 -> 4
+            // [1,3,5,6], target = 0 -> 0
+            // [1], target = 0 -> 0
+            println(searchInsert(intArrayOf(1, 3, 5, 6), 5))
+            println(searchInsert(intArrayOf(1, 3, 5, 6), 2))
+            println(searchInsert(intArrayOf(1, 3, 5, 6), 7))
+            println(searchInsert(intArrayOf(1, 3, 5, 6), 0))
+            println(searchInsert(intArrayOf(1), 0))
+        }
+        PROBLEM.LengthOfLastWord -> {
+            // "Hello World"->5
+            println(lengthOfLastWord("Hello World"))
+            println(lengthOfLastWord("a "))
+        }
+        PROBLEM.PlusOne -> {
+            println(plusOne(intArrayOf(9)).joinToString())
+            println(plusOne(intArrayOf(9, 9)).joinToString())
+        }
     }
 }
 
 fun main() {
-    run(PROBLEM.StrStr)
+    run(PROBLEM.NONE)
+}
+
+fun plusOne(digits: IntArray): IntArray {
+    var intArray = digits
+    for ((i, num) in digits.withIndex()) {
+        if (i == digits.size - 1) {
+            val newNum = num + 1
+            if (newNum > 9) {
+                val newSize = digits.size + 1
+                val newArray = intArray.copyOf(newSize)
+                intArray = newArray
+                intArray[i] = newNum / 10
+                intArray[i + 1] = newNum % 10
+            } else {
+                intArray[i] = newNum
+            }
+        } else {
+            intArray[i] = num
+        }
+    }
+    return intArray
+}
+
+fun lengthOfLastWord(s: String): Int {
+    val split = s.trim().split(" ")
+    if (split.isNotEmpty()) {
+        return split.last().length
+    }
+    return 0
+}
+
+fun searchInsert(nums: IntArray, target: Int): Int {
+    for ((i, num) in nums.withIndex()) {
+        if (num == target) return i
+        if (i > 0 && nums[i - 1] < target && nums[i] > target) return i
+        if (i == nums.size - 1 && nums[i] < target) return i + 1
+    }
+    return 0
 }
 
 fun strStr(haystack: String, needle: String): Int {
@@ -151,6 +212,20 @@ fun countChars(text: String): HashMap<Char, Int> {
         map[c] = text.count { it == c }
     }
     return map
+}
+
+// найти сколько раз встречается str
+fun countChar(input: String, str: Char): Int {
+    return countCharsMap(input)[str] ?: 0
+}
+
+fun countChar1(input: String, str: Char): Int {
+    val inputCharsList = input.toCharArray()
+    var count = 0
+    inputCharsList.forEach{
+        if(it == str) count++
+    }
+    return count
 }
 
 fun countCharsMap(text: String): HashMap<Char, Int> {
