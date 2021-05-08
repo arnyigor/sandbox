@@ -1,4 +1,4 @@
-package presentation.firebasefirestore
+package presentation.firestore
 
 import com.google.gson.GsonBuilder
 import data.firestore.FirestoreCredentials

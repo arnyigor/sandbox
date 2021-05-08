@@ -7,6 +7,7 @@ import presentation.mainform.MainFormPresenter;
 import presentation.mainform.MainFormView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 /*
  * Created by JFormDesigner on Fri Nov 29 22:20:46 MSK 2019
@@ -120,7 +121,7 @@ public class MainForm extends JFrame implements MainFormView {
 
         //======== this ========
         setResizable(false);
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
 
         //---- btnDownload ----
         btnDownload.setText("Download");

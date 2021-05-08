@@ -1,4 +1,4 @@
-package presentation.firebasefirestore
+package presentation.firestore
 
 interface FirebaseFormView {
     fun showError(error: String?)

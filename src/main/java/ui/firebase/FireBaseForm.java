@@ -6,10 +6,11 @@ package ui.firebase;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import presentation.firebasefirestore.FirebaseFirestorePresenter;
-import presentation.firebasefirestore.FirebaseFormView;
+import presentation.firestore.FirebaseFirestorePresenter;
+import presentation.firestore.FirebaseFormView;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 
@@ -231,7 +232,7 @@ public class FireBaseForm extends JFrame implements FirebaseFormView {
         //======== this ========
         setTitle("Firebase FireStore");
         setResizable(false);
-        var contentPane = getContentPane();
+        Container contentPane = getContentPane();
 
         //---- lblFilePath ----
         lblFilePath.setText("Choose path to access file");
