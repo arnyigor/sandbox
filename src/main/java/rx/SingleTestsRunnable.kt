@@ -15,7 +15,15 @@ import java.io.File
 class SingleTestsRunnable : Testable {
     private val activeClientObservable = BehaviorSubject.create<Any>()
     override fun runTest(args: Array<String>?) {
-        errorTest()
+        Single.just("1")
+            .observeOn(Schedulers.computation())
+            .doOnSuccess{ println("thread:${Thread.currentThread()}") }
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                println("res:$it")
+            },{
+
+            })
     }
 
     fun getDebitAccount(accountNumber: String, list: List<Account>): Single<Account> {
@@ -24,6 +32,19 @@ class SingleTestsRunnable : Testable {
             .firstElement()
             .switchIfEmpty(Single.error(Throwable("error no account found")))
             .subscribeOn(Schedulers.io())
+    }
+
+    fun schedullersTest() {
+        Single.just("Start value")
+            .doOnSuccess {
+                println("Thread 1:${Thread.currentThread()}")
+            }
+            .subscribeOn(Schedulers.single())
+            .subscribe({
+                println(it)
+            }, {
+                it.printStackTrace()
+            })
     }
 
     private fun longTimeEventWithMaybeError(task: String, time: Long, error: String? = null): String {

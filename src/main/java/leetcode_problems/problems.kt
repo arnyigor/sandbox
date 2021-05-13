@@ -35,9 +35,6 @@ fun run(problem: PROBLEM) {
             val b = intArrayOf(3, 4, 5, 6, 7, 8, 9)
             println(mergeToSortedArray(a, b).joinToString())
         }
-        PROBLEM.NONE -> {
-            println(countChar1("ssss",'d'))
-        }
         PROBLEM.MergeTwoLists -> {
             val ln4 = ListNode(3)
             val ln2 = ListNode(2).apply { next = ln4 }
@@ -89,6 +86,9 @@ fun run(problem: PROBLEM) {
         PROBLEM.PlusOne -> {
             println(plusOne(intArrayOf(9)).joinToString())
             println(plusOne(intArrayOf(9, 9)).joinToString())
+        }
+        PROBLEM.NONE -> {
+
         }
     }
 }
@@ -222,8 +222,8 @@ fun countChar(input: String, str: Char): Int {
 fun countChar1(input: String, str: Char): Int {
     val inputCharsList = input.toCharArray()
     var count = 0
-    inputCharsList.forEach{
-        if(it == str) count++
+    inputCharsList.forEach {
+        if (it == str) count++
     }
     return count
 }

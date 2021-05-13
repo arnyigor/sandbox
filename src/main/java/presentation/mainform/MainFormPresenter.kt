@@ -114,7 +114,8 @@ class MainFormPresenter(private val mainView: MainFormView) {
 //                                println("Result:${it.message}")
                         }
                         is DownloadResult.Error -> {
-                            println("Error message:${it.message},cause:${it.cause?.stackTraceToString()}")
+                            it.cause?.printStackTrace()
+                            println("Error message:${it.message}")
                         }
                     }
                 }
@@ -255,7 +256,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     }
 
     fun loadData() {
-        val settings = loadAppSettings(propertiesKeys = arrayOf("absolutePath", "cookie", "start", "end", "url"))
+        val settings = loadAppSettings("config.properties","absolutePath", "cookie", "start", "end", "url")
         absolutePath = settings["absolutePath"]
         cookie = settings["cookie"]
         start = settings["start"]?.toIntOrNull() ?: 0

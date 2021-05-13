@@ -5,21 +5,35 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import utils.Stopwatch
 import kotlin.coroutines.CoroutineContext
+import kotlin.system.measureTimeMillis
+
+fun main(){
+    CoroutinsTests().runTest()
+}
 
 class CoroutinsTests : Testable, CoroutineScope, AutoCloseable {
     private lateinit var stopwatch: Stopwatch
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
-    val asFlow = (1..5).asFlow()
+    private val asFlow = (1..5).asFlow()
     override fun close() {
         coroutineContext.cancel()
     }
 
     override fun runTest(args: Array<String>?) {
-        launch {
-            stopwatch = Stopwatch(true)
-            testFlow()
+        runBlocking {
+            val time = measureTimeMillis {
+                val fun1 = async { longTimeFun(100) }
+                val fun2 = async { longTimeFun(200) }
+                println("fun1:${fun1.await()},fun2:${fun2.await()}")
+            }
+            println("time:$time")
         }
+    }
+
+    private suspend fun longTimeFun(time:Long): Long {
+        delay(time)
+        return time
     }
 
     private suspend fun testFlow() {

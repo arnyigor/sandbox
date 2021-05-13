@@ -141,7 +141,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     fun loadSettings() {
-        loadAppSettings(propertiesKeys = arrayOf("filepath"))["filepath"]?.let { path ->
+        loadAppSettings("config.properties","filepath")["filepath"]?.let { path ->
             initFirestore(path)
         }
     }

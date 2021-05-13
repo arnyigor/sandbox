@@ -9,7 +9,7 @@ import java.io.File
 
 class VideoEncoding(
     ffmpegPath: String,
-    private val ffmpegForWin: Boolean = true,
+    private val ffmpegForWin: Boolean = true
 ) : IVideoEncoding {
     private val extent
         get() = if (ffmpegForWin) ".exe" else ""
