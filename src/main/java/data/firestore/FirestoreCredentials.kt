@@ -8,17 +8,19 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import java.io.FileInputStream
 
-class FirestoreCredentials(keyPath: String) {
-    private val db: Firestore
+object FirestoreCredentials {
+    private var db: Firestore? = null
 
-    init {
-        val serviceAccount = FileInputStream(keyPath)
-        val options = FirebaseOptions.builder()
-            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-            .build()
+    fun init(keyPath: String) {
+        if (db == null) {
+            val serviceAccount = FileInputStream(keyPath)
+            val options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build()
 
-        FirebaseApp.initializeApp(options)
-        db = FirestoreClient.getFirestore()
+            FirebaseApp.initializeApp(options)
+            db = FirestoreClient.getFirestore()
+        }
     }
 
     fun getDatabase() = db

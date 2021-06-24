@@ -13,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static ui.firebase.FirabaseComposeFormKt.openFireabaseComposeWindow;
+
 /**
  * @author Arny
  */
@@ -48,6 +50,7 @@ public class Starter extends JFrame {
 
     private void menuItem4ActionPerformed(ActionEvent e) {
         new FireBaseForm();
+        openFireabaseComposeWindow();
         dispose();
     }
 

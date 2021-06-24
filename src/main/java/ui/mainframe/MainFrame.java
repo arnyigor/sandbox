@@ -17,6 +17,7 @@ public class MainFrame extends JDialog implements MainFormView {
     private JButton buttonOK;
     private JButton buttonCalc;
     private JButton buttonCalcGeoTime;
+    private JButton btnFile;
     private JButton btnFileToStr;
     private JButton bntStrtoFile;
     private JButton buttonCancel;
@@ -32,6 +33,7 @@ public class MainFrame extends JDialog implements MainFormView {
 
         buttonOK.addActionListener(e -> onOK());
         buttonCalc.addActionListener(e -> onCalc());
+        btnFile.addActionListener(e -> openFile());
         buttonCalcGeoTime.addActionListener(e -> onCalcGeoTime());
         btnFileToStr.addActionListener(e -> onFileToString());
         btnReadXls.addActionListener(e -> onReadXls());
@@ -64,6 +66,7 @@ public class MainFrame extends JDialog implements MainFormView {
         contentPane = new JPanel();
         buttonOK = new JButton("OK");
         buttonCancel = new JButton("Cancel");
+        btnFile = new JButton("File");
         btnFileToStr = new JButton("File to Str");
         bntStrtoFile = new JButton("Str to file");
         buttonAuth = new JButton("Auth");
@@ -74,6 +77,7 @@ public class MainFrame extends JDialog implements MainFormView {
         labelResult = new JLabel();
         contentPane.add(buttonOK);
         contentPane.add(buttonCancel);
+        contentPane.add(btnFile);
         contentPane.add(btnFileToStr);
         contentPane.add(bntStrtoFile);
         contentPane.add(buttonAuth);
@@ -96,6 +100,15 @@ public class MainFrame extends JDialog implements MainFormView {
     }
 
     private void onCalc() {
+    }
+
+    private void openFile() {
+        JFileChooser chooser = new JFileChooser();
+        int returnVal = chooser.showOpenDialog(contentPane);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String absolutePath = chooser.getSelectedFile().getAbsolutePath();
+            mainFormPresenter.openFile(absolutePath);
+        }
     }
 
     private void onCalcGeoTime() {

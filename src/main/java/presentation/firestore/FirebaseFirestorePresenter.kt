@@ -10,6 +10,8 @@ import utils.loadAppSettings
 import utils.saveAppSettings
 
 class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
+    private var firestoreCredentials: FirestoreCredentials? = null
+
     @Volatile
     private var collectionData: List<Map<String, Any>> = emptyList()
 
@@ -21,7 +23,9 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     fun initFirestore(path: String) {
         filepath = path
         if (path.isNotBlank()) {
-            firestoreInteractor = FirestoreInteractorImpl(FirestoreCredentials(path))
+            if (firestoreInteractor == null) {
+                firestoreInteractor = FirestoreInteractorImpl(path)
+            }
         }
         view?.setPathText(path)
         loadCollections()
@@ -32,8 +36,8 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     private fun loadCollections() {
-        firestoreInteractor?.let {
-            Single.fromCallable { it.readCollections() }
+        firestoreInteractor?.let { interactor ->
+            Single.fromCallable { interactor.readCollections() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.computation())
                 .doOnSubscribe { view?.setLoading(true) }
@@ -129,9 +133,9 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     fun savePathSettings() {
-        if(filepath.isNullOrBlank()){
+        if (filepath.isNullOrBlank()) {
             view?.showError("Пустой путь")
-        }else{
+        } else {
             saveAppSettings(
                 properties = listOf(
                     "filepath" to filepath
@@ -141,7 +145,7 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
     }
 
     fun loadSettings() {
-        loadAppSettings("config.properties","filepath")["filepath"]?.let { path ->
+        loadAppSettings("config.properties", "filepath")["filepath"]?.let { path ->
             initFirestore(path)
         }
     }
@@ -155,8 +159,15 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
                 view?.showError("Нет данных для дублирования")
             }
             else -> {
+                val host = documentData["host"].toString()
                 val newDocument = documentData.toMutableMap()
                 newDocument.remove("id")
+                for ((key, value) in documentData) {
+                    val stringValue = value.toString()
+                    if (stringValue.contains(host)) {
+                        newDocument[key] = stringValue.replace(host, edtDocument)
+                    }
+                }
                 firestoreInteractor?.let { interactor ->
                     Single.fromCallable { interactor.addDocument(edtCollectionText, newDocument, edtDocument) }
                         .subscribeOn(Schedulers.io())

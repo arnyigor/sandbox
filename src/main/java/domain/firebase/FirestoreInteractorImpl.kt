@@ -5,20 +5,20 @@ import com.google.cloud.firestore.SetOptions
 import com.google.gson.Gson
 import data.firestore.FirestoreCredentials
 
+class FirestoreInteractorImpl(path: String) : FirestoreInteractor {
+    init {
+        FirestoreCredentials.init(path)
+    }
 
-class FirestoreInteractorImpl(
-    private val firestoreCredentials: FirestoreCredentials
-) : FirestoreInteractor {
+    private val database by lazy { requireNotNull(FirestoreCredentials.getDatabase()) }
 
     override fun readCollections(): List<String> {
-        return firestoreCredentials.getDatabase()
-            .listCollections()
+        return database.listCollections()
             .map { it.id }
     }
 
     override fun readCollection(collection: String): List<Map<String, Any>> {
-        return firestoreCredentials.getDatabase()
-            .collection(collection)
+        return database.collection(collection)
             .listDocuments().map {
                 val snapshot = it.get().get()
                 val data = snapshot.data
@@ -30,8 +30,7 @@ class FirestoreInteractorImpl(
     }
 
     override fun readDocument(collection: String, docName: String): Map<String, Any> {
-        return firestoreCredentials.getDatabase()
-            .collection(collection)
+        return database.collection(collection)
             .document(docName)
             .let {
                 val snapshot = it.get().get()
@@ -54,8 +53,7 @@ class FirestoreInteractorImpl(
                     sendMap[key] = value
                 }
             }
-            val result = firestoreCredentials.getDatabase()
-                .collection(collection)
+            val result = database.collection(collection)
                 .document(documentName)
                 .set(sendMap, SetOptions.merge())
                 .get()
@@ -69,8 +67,7 @@ class FirestoreInteractorImpl(
 
     override fun deleteField(collection: String, documentName: String, field: String): Boolean {
         return try {
-            val result = firestoreCredentials.getDatabase()
-                .collection(collection)
+            val result = database.collection(collection)
                 .document(documentName)
                 .update(field, FieldValue.delete())
                 .get()
@@ -84,8 +81,7 @@ class FirestoreInteractorImpl(
 
     override fun addDocument(collection: String, data: Map<String, Any>, edtDocument: String): Boolean {
         return try {
-            val collectionReference = firestoreCredentials.getDatabase()
-                .collection(collection)
+            val collectionReference = database.collection(collection)
             val documentReference = if (edtDocument.isNotBlank()) {
                 collectionReference.document(edtDocument)
             } else {
@@ -104,8 +100,7 @@ class FirestoreInteractorImpl(
 
     override fun removeDocument(collection: String, documentName: String): Boolean {
         return try {
-            val result = firestoreCredentials.getDatabase()
-                .collection(collection)
+            val result = database.collection(collection)
                 .document(documentName)
                 .delete()
                 .get()
@@ -119,8 +114,7 @@ class FirestoreInteractorImpl(
 
     override fun deleteDocument(collection: String, documentName: String): Boolean {
         return try {
-            val result = firestoreCredentials.getDatabase()
-                .collection(collection).document(documentName).delete().get()
+            val result = database.collection(collection).document(documentName).delete().get()
             println("Remove time:${result.updateTime.toDate()}")
             true
         } catch (e: Exception) {

@@ -3,7 +3,6 @@ package presentation.mainform
 import data.api.github.GithubRepository
 import data.files.FileTransfer
 import data.files.IFileTransfer
-import data.firestore.FirestoreCredentials
 import data.network.ApiHelper
 import data.network.DownloadResult
 import domain.files.FilesInteractor
@@ -56,7 +55,7 @@ class MainFormPresenter(private val mainView: MainFormView) {
     }
 
     fun initFirestore(path: String) {
-        firestoreInteractor = FirestoreInteractorImpl(FirestoreCredentials(path))
+        firestoreInteractor = FirestoreInteractorImpl(path)
     }
 
     fun auth() {
@@ -263,5 +262,16 @@ class MainFormPresenter(private val mainView: MainFormView) {
         end = settings["end"]?.toIntOrNull() ?: 0
         tsUrlWithoutEndIterate = settings["url"]
         mainView.setData(absolutePath, cookie, start.toString(), end.toString(), tsUrlWithoutEndIterate)
+    }
+
+    fun openFile(path: String) {
+        launchAsync({
+            val readText = File(path).readText()
+            readText.substringAfter("file': '").substringBefore("'")
+        }, {
+            println("paths:$it")
+        }, {
+            it.printStackTrace()
+        })
     }
 }
