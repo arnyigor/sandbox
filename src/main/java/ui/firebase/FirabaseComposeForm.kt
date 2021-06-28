@@ -39,7 +39,7 @@ fun openFireabaseComposeWindow() {
         val composePanel = ComposePanel()
         var errorMsg by mutableStateOf("")
         var successMsg by mutableStateOf("")
-        var showLoading by mutableStateOf(true)
+        var showLoading by mutableStateOf(false)
         var collections by mutableStateOf<List<String>>(emptyList())
         var docsCollection by mutableStateOf<List<String>>(emptyList())
         var docFields by mutableStateOf<List<String>>(emptyList())
@@ -58,7 +58,12 @@ fun openFireabaseComposeWindow() {
                 println("!!!!Error!!!!:$error")
                 showLoading = false
 //                errorMsg = error ?: ""
-                JOptionPane.showMessageDialog(composePanel, error, "Внимание!", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(
+                    composePanel,
+                    error,
+                    "Внимание!",
+                    JOptionPane.ERROR_MESSAGE
+                )
             }
 
             override fun setData(data: String?) {
@@ -167,7 +172,8 @@ fun openFireabaseComposeWindow() {
                             Dropdown(
                                 items = collections,
                                 selectedIndex = selectedCollectionsIndex,
-                                modifier = baseModifier.align(Alignment.CenterVertically).background(Color.White),
+                                modifier = baseModifier.align(Alignment.CenterVertically)
+                                    .background(Color.White),
                                 textUnit = textSize
                             )
                         }
@@ -192,7 +198,8 @@ fun openFireabaseComposeWindow() {
                             Dropdown(
                                 items = docsCollection,
                                 selectedIndex = selectedDocsIndex,
-                                modifier = baseModifier.align(Alignment.CenterVertically).background(Color.White),
+                                modifier = baseModifier.align(Alignment.CenterVertically)
+                                    .background(Color.White),
                                 textUnit = 14.sp
                             )
                         }
@@ -214,41 +221,40 @@ fun openFireabaseComposeWindow() {
                                 modifier = baseModifier.align(Alignment.CenterVertically)
                             )
                         }
-                    }
-                    Spacer(Modifier.size(8.dp))
-                    Column {
                         Row {
-                            Column {
-                                Row {
-                                    SimpleText(
-                                        displayText = "Fields:",
-                                        modifier = baseModifier,
-                                        textUnit = 14.sp
-                                    )
-                                    Dropdown(
-                                        items = docFields,
-                                        selectedIndex = selectedDocFieldsIndex,
-                                        modifier = baseModifier.background(Color.White),
-                                        textUnit = textSize,
-                                        onChange = {
-                                            presenter.onKeyChanged(it)
-                                        }
-                                    )
+                            SimpleText(
+                                displayText = "Fields:",
+                                modifier = baseModifier,
+                                textUnit = textSize
+                            )
+                            Dropdown(
+                                items = docFields,
+                                selectedIndex = selectedDocFieldsIndex,
+                                modifier = baseModifier.background(Color.White).wrapContentSize(),
+                                textUnit = textSize,
+                                onChange = {
+                                    presenter.onKeyChanged(it)
                                 }
-                                Spacer(Modifier.size(8.dp))
-                                SimpleTextField(
-                                    "FieldKey",
-                                    edtFieldKeyValue,
-                                    modifier = baseModifier
-                                )
-                            }
-                            Spacer(Modifier.size(8.dp))
-                            SimpleTextField(
-                                "",
-                                edtFieldValue,
-                                modifier = baseModifier.height(200.dp)
                             )
                         }
+                        Spacer(Modifier.size(8.dp))
+                        SimpleTextField(
+                            "FieldKey",
+                            edtFieldKeyValue,
+                            modifier = baseModifier
+                        )
+                    }
+                    Column {
+                        SimpleTextField(
+                            "",
+                            edtFieldValue,
+                            modifier = baseModifier.wrapContentHeight()
+                        )
+                        SimpleTextField(
+                            "Data",
+                            dataResult,
+                            modifier = baseModifier.fillMaxSize()
+                        )
                     }
                 }
                 Row {
@@ -263,7 +269,12 @@ fun openFireabaseComposeWindow() {
                             docField = docFields.getOrNull(selectedDocFieldsIndex.value)
                         )
                     }
-                    btnClickable("Duplicate", enabled, modifier = baseModifier, textUnit = textSize) {
+                    btnClickable(
+                        "Duplicate",
+                        enabled,
+                        modifier = baseModifier,
+                        textUnit = textSize
+                    ) {
                         duplicateData(
                             presenter = presenter,
                             collection = collections.getOrNull(selectedCollectionsIndex.value),
@@ -272,7 +283,12 @@ fun openFireabaseComposeWindow() {
                             onlyDocId = onlyDocId.value
                         )
                     }
-                    btnClickable("Remove Doc", enabled, modifier = baseModifier, textUnit = textSize) {
+                    btnClickable(
+                        "Remove Doc",
+                        enabled,
+                        modifier = baseModifier,
+                        textUnit = textSize
+                    ) {
                         removeDoc(
                             presenter = presenter,
                             collection = collections.getOrNull(selectedCollectionsIndex.value),
@@ -280,7 +296,12 @@ fun openFireabaseComposeWindow() {
                             onlyDocId = onlyDocId.value
                         )
                     }
-                    btnClickable("Remove Field", enabled, modifier = baseModifier, textUnit = textSize) {
+                    btnClickable(
+                        "Remove Field",
+                        enabled,
+                        modifier = baseModifier,
+                        textUnit = textSize
+                    ) {
                         removeField(
                             presenter = presenter,
                             collection = collections.getOrNull(selectedCollectionsIndex.value),
@@ -289,11 +310,6 @@ fun openFireabaseComposeWindow() {
                         )
                     }
                 }
-                SimpleTextField(
-                    "Data",
-                    dataResult,
-                    modifier = baseModifier.fillMaxSize()
-                )
             }
         }
         presenter.loadSettings()
@@ -323,7 +339,12 @@ private fun sendData(
         }
         val dialogResult = JOptionPane.showConfirmDialog(
             null,
-            String.format("Отправить данные ключ:%s->значение:%s для документа %s?", edtKeyText, edtValueText, document)
+            String.format(
+                "Отправить данные ключ:%s->значение:%s для документа %s?",
+                edtKeyText,
+                edtValueText,
+                document
+            )
         )
         if (dialogResult == JOptionPane.YES_OPTION) {
             presenter.sendData(
@@ -346,7 +367,12 @@ private fun duplicateData(
     if (!collection.isNullOrBlank()) {
         val dialogResult = JOptionPane.showConfirmDialog(
             null,
-            String.format("Дублировать данные? коллекция->%s, Документ:%s,новый документ:%s", collection, doc, docId)
+            String.format(
+                "Дублировать данные? коллекция->%s, Документ:%s,новый документ:%s",
+                collection,
+                doc,
+                docId
+            )
         )
         if (dialogResult == JOptionPane.YES_OPTION) {
             presenter.duplicateData(
@@ -364,7 +390,8 @@ private fun removeDoc(
 ) {
     if (!collection.isNullOrBlank()) {
         val documentText: String = docId ?: ""
-        val dialogResult = JOptionPane.showConfirmDialog(null, String.format("Удалить документ %s?", documentText))
+        val dialogResult =
+            JOptionPane.showConfirmDialog(null, String.format("Удалить документ %s?", documentText))
         if (dialogResult == JOptionPane.YES_OPTION) {
             presenter.removeDocument(collection, documentText, onlyDocId)
         }
@@ -381,7 +408,10 @@ private fun removeField(
         val documentText: String = docId ?: ""
         val key: String = edtKey ?: ""
         val dialogResult =
-            JOptionPane.showConfirmDialog(null, String.format("Удалить поле %s документа в id=%s?", key, documentText))
+            JOptionPane.showConfirmDialog(
+                null,
+                String.format("Удалить поле %s документа в id=%s?", key, documentText)
+            )
         if (dialogResult == JOptionPane.YES_OPTION) {
             presenter.removeField(collection, documentText, key)
         }
@@ -427,31 +457,30 @@ fun Dropdown(
     onChange: (String) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Box(modifier = modifier.wrapContentSize(Alignment.BottomCenter)
+    Box(modifier = modifier
         .clickable {
             expanded = true
         }) {
         Card(modifier = Modifier.border(1.dp, Color.Black)) {
             Text(
                 text = items.getOrNull(selectedIndex.value) ?: "-",
-                modifier = modifier.padding(10.dp), fontSize = textUnit
+                modifier = modifier.padding(8.dp), fontSize = textUnit
             )
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = modifier
+            modifier = modifier,
         ) {
             items.forEachIndexed { index, s ->
-                if (index != 0) {
-                    Divider()
-                }
-                DropdownMenuItem(onClick = {
-                    selectedIndex.value = index
-                    expanded = false
-                    onChange(s)
-                }) {
-                    Text(text = s, fontSize = textUnit)
+                DropdownMenuItem(
+                    contentPadding = PaddingValues(2.dp),
+                    onClick = {
+                        selectedIndex.value = index
+                        expanded = false
+                        onChange(s)
+                    }) {
+                    Text(text = s, modifier = Modifier.padding(2.dp), fontSize = 12.sp)
                 }
             }
         }
@@ -522,9 +551,17 @@ fun AlertDialog(
             dismissButton = {
             },
             text = {
-                Text(content, modifier = Modifier.fillMaxHeight().padding(16.dp), textAlign = TextAlign.Center)
+                Text(
+                    content,
+                    modifier = Modifier.fillMaxHeight().padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
             },
-            properties = DialogProperties(undecorated = undecorated, size = IntSize(300, 250), resizable = false)
+            properties = DialogProperties(
+                undecorated = undecorated,
+                size = IntSize(300, 250),
+                resizable = false
+            )
         )
     }
 }

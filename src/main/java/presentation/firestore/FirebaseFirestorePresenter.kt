@@ -26,9 +26,9 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
             if (firestoreInteractor == null) {
                 firestoreInteractor = FirestoreInteractorImpl(path)
             }
+            view?.setPathText(path)
+            loadCollections()
         }
-        view?.setPathText(path)
-        loadCollections()
     }
 
     private fun formatData(map: Map<String, Any>): String? {

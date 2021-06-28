@@ -4,14 +4,20 @@
 
 package ui;
 
-import ui.firebase.FireBaseForm;
+import java.awt.Container;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.WindowConstants;
+
 import ui.mainform.MainForm;
 import ui.mainframe.MainFrame;
 import ui.videoencoding.VideoEncodingForm;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 
 import static ui.firebase.FirabaseComposeFormKt.openFireabaseComposeWindow;
 
@@ -49,7 +55,7 @@ public class Starter extends JFrame {
     }
 
     private void menuItem4ActionPerformed(ActionEvent e) {
-        new FireBaseForm();
+//        new FireBaseForm();
         openFireabaseComposeWindow();
         dispose();
     }
