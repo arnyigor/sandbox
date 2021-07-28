@@ -105,9 +105,6 @@ class FirebaseFirestorePresenter(var view: FirebaseFormView?) {
             edtKeyText.isBlank() -> {
                 view?.showError("Пустое поле ключ")
             }
-            edtValueText.isBlank() -> {
-                view?.showError("Пустое поле значение")
-            }
             else -> {
                 firestoreInteractor?.let {
                     Single.fromCallable { it.setData(edtCollectionText, document, mapOf(edtKeyText to edtValueText)) }
