@@ -1,11 +1,8 @@
-import org.jetbrains.compose.compose
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.5.10"
     kotlin("kapt") version "1.5.10"
-    id("org.jetbrains.compose") version "0.5.0-build270"
 }
 
 group = "1.0-SNAPSHOT"
@@ -14,14 +11,12 @@ version = "1.0"
 repositories {
     jcenter()
     mavenCentral()
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
 
 dependencies {
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
-    implementation(compose.desktop.currentOs)
     implementation("io.ktor:ktor-client-android:1.5.3")
     implementation("commons-io:commons-io:2.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
@@ -63,16 +58,5 @@ tasks {
     }
     withType<org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile> {
         kotlinOptions.jvmTarget = "11"
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "untitled"
-            packageVersion = "1.0.0"
-        }
     }
 }
