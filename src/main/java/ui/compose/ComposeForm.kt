@@ -15,15 +15,14 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeDialog
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Notifier
 import java.awt.image.BufferedImage
 
@@ -50,18 +49,15 @@ fun main() = Window {
                         "Goodbuy"
                     }
                     clicked = !clicked
-                    AppWindow(size = IntSize(250, 250), icon = getMyAppIcon(), resizable = false).also { window ->
-                        window.keyboard.setShortcut(Key.Escape) {
-                            window.close()
+                    AppWindow(size = IntSize(250, 250), icon = getMyAppIcon(), resizable = false)
+                        .show {
+                            Text(
+                                "I'm popup! Click me to close",
+                                style = typography.h4,
+                                modifier = Modifier.padding(8.dp).clickable {
+                                    AppManager.focusedWindow?.close()
+                                })
                         }
-                    }.show {
-                        Text(
-                            "I'm popup! Click me to close",
-                            style = typography.h4,
-                            modifier = Modifier.padding(8.dp).clickable {
-                                AppManager.focusedWindow?.close()
-                            })
-                    }
                 }) {
                 Text("Click me")
             }
@@ -157,20 +153,25 @@ fun PhotographerCard(onDialogClose: (b: Boolean) -> Unit) {
     }
     if (dialogState.value) {
         Dialog(
-            onDismissRequest = { dialogState.value = false }
-        ) {
-            Column {
-                Text(text = "Location")
-                Button(
-                    onClick = {
-                        notifier.notify("Hello", "World")
-                        dialogState.value = false
+            create = {
+                ComposeDialog(
+
+                )
+            }, content = {
+                Column {
+                    Text(text = "Location")
+                    Button(
+                        onClick = {
+                            notifier.notify("Hello", "World")
+                            dialogState.value = false
+                        }
+                    ) {
+                        Text(text = "Close app")
                     }
-                ) {
-                    Text(text = "Close app")
                 }
-            }
-        }
+            }, dispose = {
+                dialogState.value = false
+            })
     }
     Row(
         modifier = Modifier
@@ -198,6 +199,7 @@ fun PhotographerCard(onDialogClose: (b: Boolean) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DialogDemo(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
     if (showDialog) {
@@ -230,7 +232,8 @@ fun DialogDemo(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
             text = {
                 Text("This is a text on the dialog")
             },
-            properties = DialogProperties(resizable = false)
+
+//            properties = DialogProperties(resizable = false)
         )
     }
 }
