@@ -14,13 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import presentation.firestore.FirebaseFirestorePresenter
 import presentation.firestore.FirebaseFormView
 import utils.fileChoose
@@ -510,11 +508,7 @@ private fun dialog(error: String) {
         size = IntSize(250, 250),
         icon = getMyAppIcon(),
         resizable = false
-    ).also { window ->
-        window.keyboard.setShortcut(Key.Escape) {
-            window.close()
-        }
-    }.show {
+    ).show {
         Text(
             error,
             style = typography.h4,
@@ -534,6 +528,7 @@ fun getMyAppIcon(): BufferedImage {
     return image
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AlertDialog(
     showDialog: Boolean,
@@ -566,6 +561,7 @@ fun AlertDialog(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfirmDialog(
     showDialog: MutableState<Boolean>,
@@ -607,7 +603,7 @@ fun ConfirmDialog(
             text = {
                 Text(content, modifier = Modifier.padding(8.dp), textAlign = TextAlign.Center)
             },
-            properties = DialogProperties(size = size, resizable = false)
+//            properties = DialogProperties(size = size, resizable = false)
         )
     }
 }

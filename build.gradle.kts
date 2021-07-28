@@ -3,9 +3,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.31"
-    kotlin("kapt") version "1.4.31"
-    id("org.jetbrains.compose") version "0.3.2"
+    kotlin("jvm") version "1.5.10"
+    kotlin("kapt") version "1.5.10"
+    id("org.jetbrains.compose") version "0.5.0-build270"
 }
 
 group = "1.0-SNAPSHOT"
@@ -53,8 +53,17 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
+    withType<JavaCompile> {
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
+    }
+    withType<org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
 }
 
 compose.desktop {
